@@ -61,6 +61,7 @@ export const authService = {
       token,
       user: {
         id: user.id,
+        uuid: user.uuid,
         name: user.name,
         email: user.email,
         avatar: user.avatar || null,
