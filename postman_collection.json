@@ -1,0 +1,407 @@
+{
+  "info": {
+    "name": "Node Admin API",
+    "_postman_id": "db42bc84-51d5-46af-a9f8-62a2967f1f10",
+    "description": "Curated Postman collection for the Sequelize + PostgreSQL API routes mounted in app.js.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" },
+    { "key": "token", "value": "" },
+    { "key": "uuid", "value": "" },
+    { "key": "token_reset", "value": "" },
+    { "key": "userId", "value": "1" },
+    { "key": "moduleId", "value": "1" },
+    { "key": "permissionId", "value": "1" },
+    { "key": "modulePermissionId", "value": "1" }
+  
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{token}}", "type": "string" }
+    ]
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "auth": { "type": "noauth" },
+            "header": [],
+            "url": "{{base_url}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "API v2",
+      "item": [
+        {
+          "name": "GET /api/v2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v2"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /api/v1/register",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"123456\",\n  \"phone\": \"9876543210\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/register"
+          }
+        },
+        {
+          "name": "POST /api/v1/login",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/login"
+          }
+        },
+        {
+          "name": "POST /api/v1/logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{base_url}}/api/v1/logout"
+          }
+        },
+        {
+          "name": "POST /api/v1/forgot-password",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/forgot-password"
+          }
+        },
+        {
+          "name": "PUT /api/v1/reset-password/:token",
+          "request": {
+            "method": "PUT",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"newpassword123\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/reset-password/{{token_reset}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "GET /api/v1/user/me",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user/me" }
+        },
+        {
+          "name": "GET /api/v1/user/list",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/user/list?page=1&limit=10&search=&sortedField=createdAt&sortedBy=DESC"
+          }
+        },
+        {
+          "name": "POST /api/v1/user/create",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Jane Doe", "type": "text" },
+                { "key": "email", "value": "jane@example.com", "type": "text" },
+                { "key": "phone", "value": "+911234567890", "type": "text" },
+                { "key": "role", "value": "user", "type": "text" },
+                { "key": "password", "value": "Password@123", "type": "text" },
+                { "key": "avatar", "type": "file", "src": "" }
+              ]
+            },
+            "url": "{{base_url}}/api/v1/user/create"
+          }
+        },
+        {
+          "name": "PUT /api/v1/user/update/:uuid",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Jane Doe", "type": "text" },
+                { "key": "email", "value": "jane@example.com", "type": "text" },
+                { "key": "phone", "value": "+911234567890", "type": "text" },
+                { "key": "role", "value": "user", "type": "text" },
+                { "key": "avatar", "type": "file", "src": "" }
+              ]
+            },
+            "url": "{{base_url}}/api/v1/user/update/{{uuid}}"
+          }
+        },
+        {
+          "name": "PATCH /api/v1/user/delete/:uuid",
+          "request": { "method": "PATCH", "header": [], "url": "{{base_url}}/api/v1/user/delete/{{uuid}}" }
+        },
+        {
+          "name": "GET /api/v1/user/get/:uuid",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user/get/{{uuid}}" }
+        },
+        {
+          "name": "PUT /api/v1/user/status/:uuid",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}" },
+            "url": "{{base_url}}/api/v1/user/status/{{uuid}}"
+          }
+        },
+        {
+          "name": "GET /api/v1/user/getList",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user/getList" }
+        },
+        {
+          "name": "GET /api/v1/user/export/csv",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user/export/csv" }
+        }
+      ]
+    },
+    {
+      "name": "Access",
+      "item": [
+        {
+          "name": "GET /api/v1/access/:userId",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/access/{{userId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Modules",
+      "item": [
+        {
+          "name": "GET /api/v1/module/list",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/module/list" }
+        },
+        {
+          "name": "GET /api/v1/module/list/:id",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/module/list/{{moduleId}}" }
+        },
+        {
+          "name": "POST /api/v1/module/create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Users\",\n  \"url\": \"/user\",\n  \"icon\": \"users\",\n  \"parent_id\": 0,\n  \"seq_no\": 1,\n  \"is_permission\": \"Y\",\n  \"is_sub_module\": \"N\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/module/create"
+          }
+        },
+        {
+          "name": "PUT /api/v1/module/update/:uuid",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Users\",\n  \"url\": \"/user\",\n  \"icon\": \"users\",\n  \"parent_id\": 0,\n  \"seq_no\": 1,\n  \"is_permission\": \"Y\",\n  \"is_sub_module\": \"N\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/module/update/{{uuid}}"
+          }
+        },
+        {
+          "name": "DELETE /api/v1/module/delete/:uuid",
+          "request": { "method": "DELETE", "header": [], "url": "{{base_url}}/api/v1/module/delete/{{uuid}}" }
+        },
+        {
+          "name": "GET /api/v1/module/get/:uuid",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/module/get/{{uuid}}" }
+        },
+        {
+          "name": "PUT /api/v1/module/status/:uuid",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}" },
+            "url": "{{base_url}}/api/v1/module/status/{{uuid}}"
+          }
+        },
+        {
+          "name": "GET /api/v1/module/getList",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/module/getList" }
+        }
+      ]
+    },
+    {
+      "name": "Role Modules",
+      "item": [
+        {
+          "name": "GET /api/v1/role-modules/matrix",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/role-modules/matrix" }
+        },
+        {
+          "name": "POST /api/v1/role-modules/toggle",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"admin\",\n  \"module_id\": {{moduleId}},\n  \"checked\": true\n}"
+            },
+            "url": "{{base_url}}/api/v1/role-modules/toggle"
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Permissions",
+      "item": [
+        {
+          "name": "POST /api/v1/user-permissions/toggle",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": {{userId}},\n  \"module_permission_id\": {{modulePermissionId}},\n  \"checked\": true\n}"
+            },
+            "url": "{{base_url}}/api/v1/user-permissions/toggle"
+          }
+        },
+        {
+          "name": "GET /api/v1/user-permissions/getAll/:uuid",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user-permissions/getAll/{{uuid}}" }
+        },
+        {
+          "name": "GET /api/v1/user-permissions/module-access/:uuid",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user-permissions/module-access/{{uuid}}" }
+        },
+        {
+          "name": "GET /api/v1/user-permissions/side-menu",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user-permissions/side-menu" }
+        }
+      ]
+    },
+    {
+      "name": "CMS",
+      "item": [
+        { "name": "GET /api/v1/cms/list", "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/cms/list" } },
+        {
+          "name": "POST /api/v1/cms/create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Terms\",\n  \"slug\": \"terms\",\n  \"content\": \"Terms content\",\n  \"status\": \"active\"\n}" },
+            "url": "{{base_url}}/api/v1/cms/create"
+          }
+        },
+        {
+          "name": "PUT /api/v1/cms/update/:uuid",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Terms\",\n  \"slug\": \"terms\",\n  \"content\": \"Updated terms content\",\n  \"status\": \"active\"\n}" },
+            "url": "{{base_url}}/api/v1/cms/update/{{uuid}}"
+          }
+        },
+        { "name": "DELETE /api/v1/cms/delete/:uuid", "request": { "method": "DELETE", "header": [], "url": "{{base_url}}/api/v1/cms/delete/{{uuid}}" } },
+        { "name": "GET /api/v1/cms/get/:uuid", "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/cms/get/{{uuid}}" } },
+        {
+          "name": "PUT /api/v1/cms/status/:uuid",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}" },
+            "url": "{{base_url}}/api/v1/cms/status/{{uuid}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Editor",
+      "item": [
+        {
+          "name": "POST /api/v1/editor/upload",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "image", "type": "file", "src": "" }
+              ]
+            },
+            "url": "{{base_url}}/api/v1/editor/upload"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        { "name": "GET /api/v1/category/list", "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/category/list" } },
+        { "name": "GET /api/v1/category/list/:id", "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/category/list/{{moduleId}}" } },
+        {
+          "name": "POST /api/v1/category/create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"General\",\n  \"parentId\": 0,\n  \"status\": \"active\"\n}" },
+            "url": "{{base_url}}/api/v1/category/create"
+          }
+        },
+        {
+          "name": "PUT /api/v1/category/update/:uuid",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"General\",\n  \"parentId\": 0,\n  \"status\": \"active\"\n}" },
+            "url": "{{base_url}}/api/v1/category/update/{{uuid}}"
+          }
+        },
+        { "name": "DELETE /api/v1/category/delete/:uuid", "request": { "method": "DELETE", "header": [], "url": "{{base_url}}/api/v1/category/delete/{{uuid}}" } },
+        { "name": "GET /api/v1/category/get/:uuid", "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/category/get/{{uuid}}" } },
+        {
+          "name": "PUT /api/v1/category/status/:uuid",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}" },
+            "url": "{{base_url}}/api/v1/category/status/{{uuid}}"
+          }
+        },
+        { "name": "GET /api/v1/category/getList", "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/category/getList" } }
+      ]
+    }
+   
+  ]
+}
