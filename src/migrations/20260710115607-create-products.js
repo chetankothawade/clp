@@ -1,8 +1,9 @@
-"use strict";
-/** @type {import('sequelize-cli').Migration} */
-module.exports = {
+'use strict';
+import { dropEnumType } from '../utils/migration.js';
+
+export default {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Products", {
+    await queryInterface.createTable("products", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -36,32 +37,34 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      catecory_id: {
+      category_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-         references: {
-          model: 'categories', // self reference
+        allowNull: true,
+        references: {
+          model: 'categories',
           key: 'id',
         },
         onDelete: 'SET NULL',
       },
       status: {
         type: Sequelize.ENUM("active", "inactive"),
-        defaultValue: "active",
-      },  
+        defaultValue: 'active',
+        allowNull: false,
+      },
       created_at: {
         type: Sequelize.DATE,
-        allowNull: true,
-        defaultValue: null,
+        allowNull: false,
+        defaultValue: Sequelize.fn('NOW'),
       },
       updated_at: {
         type: Sequelize.DATE,
-        allowNull: true,
-        defaultValue: null,
+        allowNull: false,
+        defaultValue: Sequelize.fn('NOW'),
       },
     });
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Products");
+  async down(queryInterface) {
+    await queryInterface.dropTable('products');
+    await dropEnumType(queryInterface, 'products', 'status');
   },
 };

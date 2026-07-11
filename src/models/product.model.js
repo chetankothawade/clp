@@ -1,6 +1,6 @@
-"use strict";
-const { Model } = require("sequelize");
-module.exports = (sequelize, DataTypes) => {
+import { Model } from "sequelize";
+
+export default (sequelize, DataTypes) => {
   class Product extends Model {
     /**
      * Helper method for defining associations.
@@ -8,12 +8,15 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Product.hasMany(models.Purchase, {
+        as: "purchases",
+        foreignKey: { name: "productId", field: "product_id" },
+      });
     }
   }
   Product.init(
     {
-      id: DataTypes.INTEGER,
+      id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
       name: DataTypes.STRING,
       sku: DataTypes.STRING,
       price: DataTypes.DECIMAL(10, 2),

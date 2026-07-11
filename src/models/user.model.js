@@ -136,6 +136,8 @@ export default (sequelize) => {
 
   User.associate = (models) => {
     User.hasMany(models.UserPermission, { foreignKey: { name: "userId", field: "user_id" } });
+    User.hasMany(models.Purchase, { as: "purchases", foreignKey: { name: "userId", field: "user_id" } });
+    User.hasMany(models.Redemption, { as: "redemptions", foreignKey: { name: "userId", field: "user_id" } });
   };
   return User;
 };
