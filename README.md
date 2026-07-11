@@ -1,4 +1,4 @@
-# Node Admin API
+# Customer Loyalty Program
 
 Express 5 API using Sequelize and PostgreSQL. The project follows the same layered architecture and middleware pattern as the Prisma reference project while keeping Sequelize as the ORM.
 
