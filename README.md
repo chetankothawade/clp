@@ -1,142 +1,151 @@
 # Customer Loyalty Program
 
-Express 5 API using Sequelize and PostgreSQL. The project follows the same layered architecture and middleware pattern as the Prisma reference project while keeping Sequelize as the ORM.
+Customer Loyalty Program is a Node.js backend API for managing users, rewards, purchases, redemptions, and administrative modules for a loyalty-driven business. The project is built with Express 5, Sequelize, PostgreSQL, and JWT-based authentication.
 
-## Features
+## What is included
 
-- JWT authentication with register, login, forgot/reset password, logout, and protected routes
-- User management with UUID-based public operations
-- RBAC modules, permissions, role-module mapping, and user-permission assignment
-- CMS, editor uploads, categories
-- Versioned API route groups under `/api/v1` and `/api/v2`
-- Thin controller, service, and repository architecture
-- PostgreSQL migrations using snake_case database columns
-- Sequelize models using camelCase JavaScript attributes mapped to snake_case columns with `field`
-- Centralized async handling, validation, error handling, and API responses
-- HTTP access logging through Morgan
-- Application, database, auth, i18n, and error logging through Pino
-- Security and request middleware: Helmet, CORS, rate limiting, compression, request ID, cookie parser, and i18n
+- User authentication with register, login, forgot password, reset password, logout, and protected routes
+- Role-based access control with modules, permissions, role-module mapping, and user-permission assignment
+- Loyalty modules for products, purchases, rewards, and redemptions
+- Dashboard and reporting endpoints
+- CMS and category management
+- Editor upload handling and static file serving
+- Versioned API routing under `/api/v1` and `/api/v2`
+- Centralized validation, error handling, logging, localization, and security middleware
 
-## Stack
+## Tech stack
 
 - Node.js with ES modules
 - Express 5
 - Sequelize 6
-- PostgreSQL via `pg` and `pg-hstore`
-- JWT
+- PostgreSQL with `pg` and `pg-hstore`
+- JWT authentication
 - Zod validation
 - Morgan for HTTP request logging
 - Pino for application and error logging
 - Multer and Cloudinary for uploads
-- Socket.io for chat infrastructure
+- Socket.io support for future chat/integration features
 - ESLint with Node and security rules
 
-## Project Structure
+## Project structure
 
 ```text
 app.js                  # Express app, middleware, health check, route mounting
-index.js                # Legacy entry point compatibility
+index.js                # Entry point for the application
 server.js               # Server bootstrap pattern
 eslint.config.js        # ESLint flat config
 
 src/
   bootstrap/            # App bootstrap helpers
-  config/               # Sequelize/PostgreSQL config
+  config/               # Sequelize and PostgreSQL configuration
   controllers/          # Thin HTTP handlers
-  middlewares/          # Auth, RBAC, validation, logging, error handling, security
+  middlewares/          # Auth, RBAC, validation, logging, security, and error handling
   migrations/           # PostgreSQL schema migrations
   models/               # Sequelize models and associations
   repositories/         # Database access layer
-  routes/               # Route files plus versioned route groups
-  seeders/              # Sequelize seed data
+  routes/               # Route files and versioned route groups
+  seeders/              # Seed data
   services/             # Business logic
-  utils/                # Shared logger, response, token, migration, upload helpers
-  validations/          # Zod request validation rules
+  utils/                # Logging, response, token, upload, and helper utilities
+  validations/          # Zod request validation schemas
 ```
 
-## API Base
+## API base
 
 - Base URL: `http://localhost:8000`
 - Health check: `GET /health`
-- v1 prefix: `/api/v1`
-- v2 prefix: `/api/v2`
+- API v1 prefix: `/api/v1`
+- API v2 prefix: `/api/v2`
 
-## Mounted v1 Routes
+## Mounted routes
 
-Defined in `src/routes/v1/index.js`:
+The main versioned router is defined in `src/routes/v1/index.js` and currently exposes:
 
-- `/api/v1`
+- `/api/v1/`
 - `/api/v1/user`
 - `/api/v1/access`
 - `/api/v1/module`
-- `/api/v1/cms`
+- `/api/v1/products`
+- `/api/v1/purchases`
+- `/api/v1/rewards`
+- `/api/v1/redemptions`
+- `/api/v1/dashboard`
 - `/api/v1/editor`
+- `/api/v1/cms`
 - `/api/v1/category`
 - `/api/v1/user-permissions`
 - `/api/v1/role-modules`
 
-`/api/v2` is mounted and currently exposes a readiness endpoint.
+`/api/v2` currently provides a readiness response for versioned API checks.
 
-## Architecture Pattern
+## Architecture pattern
 
-The app uses a layered pattern:
+The application follows a layered structure:
 
 ```text
 route -> middleware -> controller -> service -> repository -> Sequelize model
 ```
 
-- Controllers only map HTTP input/output.
-- Services hold business logic and permission decisions.
+- Controllers handle HTTP input and output.
+- Services contain business logic and permission decisions.
 - Repositories isolate database access.
 - Models define Sequelize attributes, associations, and PostgreSQL column mapping.
-- Middleware handles auth, RBAC, validation, request IDs, logging, and errors.
+- Middleware handles authentication, RBAC, validation, request IDs, logging, and errors.
 
-## Middleware
+## Middleware and utilities
 
-Core middleware is mounted in `app.js`:
+Core middleware is applied in `app.js`:
 
-- `requestId` adds `req.id` and response request IDs.
-- `helmet` applies secure HTTP headers.
-- `cors` centralizes cross-origin rules.
-- `compression` enables response compression.
-- `cookieParser` parses cookies.
-- `logger` uses Morgan for HTTP request logs and writes them through Pino.
-- `express.json` and `express.urlencoded` parse request bodies.
-- `i18n` attaches localized API messages.
-- `limiter` applies rate limiting.
-- `errorHandler` centralizes error responses and Pino error logs.
+- `requestId` adds a request ID to each request and response
+- `helmet` adds secure HTTP headers
+- `cors` centralizes cross-origin rules
+- `compression` enables response compression
+- `cookieParser` parses cookies
+- `logger` records HTTP traffic using Morgan and Pino
+- `express.json` and `express.urlencoded` parse request bodies
+- `i18n` provides localized API messages
+- `limiter` applies rate limiting
+- `errorHandler` centralizes error responses and logging
 
-Auth and route-level middleware:
+## Environment configuration
 
-- `isAuthenticated` verifies JWT access tokens.
-- `authorizeRoles` supports role checks.
-- `validateRequest` applies Zod schemas.
-- `asyncHandler` wraps async controllers.
-
-## Logging
-
-Morgan and Pino are used together:
-
-- HTTP request logging: `src/middlewares/logger.js`
-- Application and error logging: `src/utils/logger.js`
-
-Set log level with:
+Create a `.env` or `.env.local` file with the values required for your local setup.
 
 ```env
-LOG_LEVEL=info
-```
+APP_NAME="Customer Loyalty Program"
+PORT=8000
+NODE_ENV=development
+SECRET_KEY=user@100605
+ADMIN_SECRET_KEY=admin@100605
+JWT_EXPIRES_IN=7d
+ADMIN_JWT_EXPIRES_IN=1d
+DEBUG=true
 
-Enable SQL logging with:
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=loyalty
+DB_USER=postgres
+DB_PASS=postgres
+DB_DIALECT=postgres
 
-```env
-DB_LOGGING=true
+CLIENT_ORIGIN=http://localhost:3000
+FRONTEND_USER_URL=http://localhost:3000
+FRONTEND_ADMIN_URL=http://localhost:3000/admin
+
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USER=your_mailtrap_user
+MAIL_PASS=your_mailtrap_password
+MAIL_FROM_EMAIL=no-reply@yopmail.com
+MAIL_FROM_NAME="Customer Loyalty Program"
 ```
 
 ## Database
 
-The project uses PostgreSQL with Sequelize.
+The project uses PostgreSQL with Sequelize and supports migrations and seed data.
 
-Important files:
+Key files:
 
 - `src/config/database.js`
 - `src/config/config.cjs`
@@ -145,30 +154,11 @@ Important files:
 - `src/models/`
 - `src/seeders/`
 
-Common environment variables:
+Database naming convention:
 
-```env
-PORT=8000
-NODE_ENV=development
-
-DB_DIALECT=postgres
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_NAME=express_db
-DB_USER=postgres
-DB_PASS=
-DB_LOGGING=false
-
-JWT_SECRET=change_me
-JWT_EXPIRES_IN=1d
-```
-
-## Database Naming Convention
-
-- Database columns use snake_case.
-- JavaScript model attributes remain camelCase where useful.
-- Sequelize model attributes map to PostgreSQL columns with `field`.
-- Migrations and seeders must use actual snake_case database column names.
+- Database columns use `snake_case`
+- JavaScript model attributes remain `camelCase`
+- Sequelize model attributes map to database columns with `field`
 
 Example:
 
@@ -180,30 +170,15 @@ createdBy: {
 }
 ```
 
-## RBAC
+## RBAC and permissions
 
-RBAC mirrors the Prisma reference project concepts:
+The RBAC model follows the same structure as the reference implementation:
 
-- Modules are stored in `modules`.
-- Permissions are stored in `permissions`.
-- Module-permission pairs are stored in `module_permissions`.
-- Role-module access is stored in `role_modules`.
-- User-specific permission access is stored in `user_permissions`.
-
-Related files:
-
-- `src/controllers/module.controller.js`
-- `src/controllers/roleModule.controller.js`
-- `src/controllers/userPermission.controller.js`
-- `src/services/module.service.js`
-- `src/services/roleModule.service.js`
-- `src/services/userPermission.service.js`
-- `src/repositories/module.repository.js`
-- `src/repositories/roleModule.repository.js`
-- `src/repositories/userPermission.repository.js`
-- `src/routes/module.route.js`
-- `src/routes/roleModule.route.js`
-- `src/routes/userPermission.route.js`
+- Modules are stored in `modules`
+- Permissions are stored in `permissions`
+- Module-permission pairs are stored in `module_permissions`
+- Role-module access is stored in `role_modules`
+- User-specific permission access is stored in `user_permissions`
 
 ## Setup
 
@@ -213,7 +188,7 @@ Install dependencies:
 npm install
 ```
 
-Configure `.env` with PostgreSQL, JWT, mail, upload, and Cloudinary settings as needed.
+Configure your environment file with database, JWT, mail, and upload values.
 
 Run migrations:
 
@@ -227,29 +202,29 @@ Run seeders:
 npm run db:seed
 ```
 
-Start development server:
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Start production server:
+Start the production server:
 
 ```bash
 npm start
 ```
 
-## Scripts
+## Available scripts
 
-- `npm run dev` starts the API with nodemon.
-- `npm start` starts the API with Node.
-- `npm run lint` runs ESLint.
-- `npm run lint:fix` runs ESLint auto-fix.
-- `npm run db:migrate` runs Sequelize migrations.
-- `npm run db:migrate:undo` reverts the latest migration.
-- `npm run db:seed` runs all seeders.
-- `npm run db:seed:undo` reverts all seeders.
-- `npm run postman:generate` generates a Postman collection from `app.js`.
+- `npm run dev` starts the API with nodemon
+- `npm start` starts the API with Node.js
+- `npm run lint` runs ESLint
+- `npm run lint:fix` fixes ESLint issues automatically
+- `npm run db:migrate` runs Sequelize migrations
+- `npm run db:migrate:undo` reverts the latest migration
+- `npm run db:seed` runs all seeders
+- `npm run db:seed:undo` reverts all seeders
+- `npm run postman:generate` generates a Postman collection from the app entry point
 
 ## Verification
 
@@ -258,13 +233,11 @@ Useful checks after changes:
 ```bash
 npm run lint
 node -e "import('./app.js').then(() => console.log('app import ok'))"
-node -e "import('./src/models/index.js').then(({ default: db }) => console.log(Object.keys(db).filter((key) => key !== 'sequelize' && key !== 'Sequelize').length + ' models loaded'))"
 ```
 
 ## Notes
 
-- Keep Sequelize and PostgreSQL in the target project.
-- Keep migrations and raw seed data aligned with PostgreSQL snake_case column names.
-- Keep API route payloads and JavaScript code stable unless an endpoint explicitly needs a response contract change.
-- Use Morgan only for HTTP request logging.
-- Use Pino for application logs, SQL logs, auth/i18n warnings, and error logs.
+- Keep Sequelize and PostgreSQL as the core data layer.
+- Keep migrations and seed data aligned with PostgreSQL snake_case columns.
+- Use Morgan for HTTP request logging and Pino for application, auth, localization, and error logs.
+- Uploaded files are served from the `uploads` folder through the application.
