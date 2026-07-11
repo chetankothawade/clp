@@ -13,7 +13,14 @@
     { "key": "userId", "value": "1" },
     { "key": "moduleId", "value": "1" },
     { "key": "permissionId", "value": "1" },
-    { "key": "modulePermissionId", "value": "1" }
+    { "key": "modulePermissionId", "value": "1" },
+    { "key": "admin_token", "value": "" },
+    { "key": "customer_token", "value": "" },
+    { "key": "category_id", "value": "1" },
+    { "key": "product_uuid", "value": "" },
+    { "key": "reward_uuid", "value": "" },
+    { "key": "purchase_uuid", "value": "" },
+    { "key": "redemption_uuid", "value": "" }
   
   ],
   "auth": {
@@ -401,7 +408,97 @@
         },
         { "name": "GET /api/v1/category/getList", "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/category/getList" } }
       ]
-    }
+    },
+    {
+      "name": "Loyalty Program APIs",
+      "description": "Use the seeded login requests first. Admin requests use admin_token; customer requests use customer_token.",
+      "item": [
+        {
+          "name": "Authentication - Seeded Accounts",
+          "item": [
+            {
+              "name": "POST Login - Admin Seeder",
+              "request": {
+                "method": "POST",
+                "auth": { "type": "noauth" },
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@yopmail.com\",\n  \"password\": \"Admin@123\"\n}" },
+                "url": "{{base_url}}/api/v1/login"
+              },
+              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const response = pm.response.json();", "pm.collectionVariables.set('admin_token', response.data.token);"] } }]
+            },
+            {
+              "name": "POST Login - Customer Seeder",
+              "request": {
+                "method": "POST",
+                "auth": { "type": "noauth" },
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{\n  \"email\": \"user@yopmail.com\",\n  \"password\": \"User@123\"\n}" },
+                "url": "{{base_url}}/api/v1/login"
+              },
+              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const response = pm.response.json();", "pm.collectionVariables.set('customer_token', response.data.token);"] } }]
+            }
+          ]
+        },
+        {
+          "name": "Admin - Products",
+          "item": [
+            {
+              "name": "POST Create Product",
+              "request": {
+                "method": "POST",
+                "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] },
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Postman Demo Product\",\n  \"sku\": \"POSTMAN-DEMO-001\",\n  \"price\": 999.00,\n  \"description\": \"Created from Postman\",\n  \"loyalty_points\": 100,\n  \"category_id\": {{category_id}}\n}" },
+                "url": "{{base_url}}/api/v1/products"
+              },
+              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const response = pm.response.json();", "pm.collectionVariables.set('product_uuid', response.data.product.uuid);"] } }]
+            },
+            { "name": "GET List Products", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/products?page=1&limit=10" } },
+            { "name": "GET Product Details", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/products/{{product_uuid}}" } },
+            {
+              "name": "PUT Update Product",
+              "request": { "method": "PUT", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Postman Product\",\n  \"sku\": \"POSTMAN-DEMO-001\",\n  \"price\": 1099.00,\n  \"description\": \"Updated from Postman\",\n  \"loyalty_points\": 110,\n  \"category_id\": {{category_id}}\n}" }, "url": "{{base_url}}/api/v1/products/{{product_uuid}}" }
+            },
+            { "name": "PATCH Product Status", "request": { "method": "PATCH", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}" }, "url": "{{base_url}}/api/v1/products/{{product_uuid}}/status" } }
+          ]
+        },
+        {
+          "name": "Admin - Rewards",
+          "item": [
+            {
+              "name": "POST Create Reward",
+              "request": { "method": "POST", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Postman Gift Voucher\",\n  \"description\": \"Created from Postman\",\n  \"reward_type\": \"voucher\",\n  \"points_required\": 100,\n  \"stock\": 10\n}" }, "url": "{{base_url}}/api/v1/rewards" },
+              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const response = pm.response.json();", "pm.collectionVariables.set('reward_uuid', response.data.reward.uuid);"] } }]
+            },
+            { "name": "GET List Rewards", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/rewards?page=1&limit=10" } },
+            { "name": "GET Reward Details", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/rewards/{{reward_uuid}}" } },
+            { "name": "PUT Update Reward", "request": { "method": "PUT", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Postman Gift Voucher\",\n  \"description\": \"Updated from Postman\",\n  \"reward_type\": \"voucher\",\n  \"points_required\": 100,\n  \"stock\": 10\n}" }, "url": "{{base_url}}/api/v1/rewards/{{reward_uuid}}" } },
+            { "name": "PATCH Reward Status", "request": { "method": "PATCH", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}" }, "url": "{{base_url}}/api/v1/rewards/{{reward_uuid}}/status" } }
+          ]
+        },
+        {
+          "name": "Customer - Loyalty",
+          "item": [
+            { "name": "GET Dashboard", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/dashboard" } },
+            { "name": "GET Available Rewards", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/rewards?page=1&limit=10" } },
+            { "name": "GET Reward Details", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/rewards/{{reward_uuid}}" } },
+            {
+              "name": "POST Create Purchase",
+              "request": { "method": "POST", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"product_uuid\": \"{{product_uuid}}\",\n  \"quantity\": 1\n}" }, "url": "{{base_url}}/api/v1/purchases" },
+              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const response = pm.response.json();", "pm.collectionVariables.set('purchase_uuid', response.data.purchase.uuid);"] } }]
+            },
+            { "name": "GET Purchase History", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/purchases?page=1&limit=10" } },
+            { "name": "GET Purchase Details", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/purchases/{{purchase_uuid}}" } },
+            {
+              "name": "POST Redeem Reward",
+              "request": { "method": "POST", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"reward_uuid\": \"{{reward_uuid}}\"\n}" }, "url": "{{base_url}}/api/v1/redemptions" },
+              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const response = pm.response.json();", "pm.collectionVariables.set('redemption_uuid', response.data.redemption.uuid);"] } }]
+            },
+            { "name": "GET Redemption History", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/redemptions?page=1&limit=10" } },
+            { "name": "GET Redemption Details", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/redemptions/{{redemption_uuid}}" } }
+          ]
+        }
    
   ]
 }
