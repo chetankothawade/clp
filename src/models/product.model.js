@@ -8,6 +8,10 @@ export default (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      Product.belongsTo(models.Category, {
+        as: "category",
+        foreignKey: { name: "category_id", field: "category_id" },
+      });
       Product.hasMany(models.Purchase, {
         as: "purchases",
         foreignKey: { name: "productId", field: "product_id" },
@@ -17,6 +21,7 @@ export default (sequelize, DataTypes) => {
   Product.init(
     {
       id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+      uuid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, allowNull: false, unique: true },
       name: DataTypes.STRING,
       sku: DataTypes.STRING,
       price: DataTypes.DECIMAL(10, 2),

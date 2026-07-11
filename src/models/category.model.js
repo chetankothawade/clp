@@ -52,6 +52,11 @@ export default (sequelize) => {
             foreignKey: { name: "parentId", field: "parent_id" },
             inverse: { as: "parent" }
         });
+
+        Category.hasMany(models.Product, {
+            as: "products",
+            foreignKey: { name: "category_id", field: "category_id" },
+        });
     };
 
     return Category;
