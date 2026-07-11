@@ -85,6 +85,10 @@
 	"product.get.success": "Product retrieved successfully.",
 	"product.update.success": "Product updated successfully.",
 	"product.status.success": "Product status updated successfully.",
+	"purchase.create.success": "Purchase completed and loyalty points earned successfully.",
+	"purchase.list.success": "Purchase history retrieved successfully.",
+	"purchase.get.success": "Purchase details retrieved successfully.",
+	"purchase.product_not_available": "The selected product is unavailable.",
 	"validation.category_not_found": "Selected category does not exist.",
 	"validation.sku_already_exists": "SKU already exists.",
 	"sequelize is not defined": "sequelize is not defined"
