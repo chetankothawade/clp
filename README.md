@@ -31,11 +31,13 @@ Customer Loyalty Program is a Node.js backend API for managing users, rewards, p
 
 ```text
 app.js                  # Express app, middleware, health check, route mounting
-index.js                # Entry point for the application
+index.js                # Entry point for the monolithic application
 server.js               # Server bootstrap pattern
 eslint.config.js        # ESLint flat config
 
-src/
+docker-compose.yml      # Local orchestration for PostgreSQL and service containers
+
+src/                    # Main monolith application source
   bootstrap/            # App bootstrap helpers
   config/               # Sequelize and PostgreSQL configuration
   controllers/          # Thin HTTP handlers
@@ -48,11 +50,18 @@ src/
   services/             # Business logic
   utils/                # Logging, response, token, upload, and helper utilities
   validations/          # Zod request validation schemas
+
+services/               # Service-based migration scaffold
+  api-gateway/          # HTTP gateway for routing requests to downstream services
+  auth-service/         # Auth and user-domain service package
+  product-service/      # Product and category service package
+  loyalty-service/     # Purchase, reward, redemption, and dashboard service package
 ```
 
 ## API base
 
-- Base URL: `http://localhost:8000`
+- Monolith base URL: `http://localhost:8000`
+- Gateway base URL: `http://localhost:3001`
 - Health check: `GET /health`
 - API v1 prefix: `/api/v1`
 - API v2 prefix: `/api/v2`
@@ -80,7 +89,7 @@ The main versioned router is defined in `src/routes/v1/index.js` and currently e
 
 ## Architecture pattern
 
-The application follows a layered structure:
+The application follows a layered structure for the monolith:
 
 ```text
 route -> middleware -> controller -> service -> repository -> Sequelize model
@@ -182,7 +191,7 @@ The RBAC model follows the same structure as the reference implementation:
 
 ## Setup
 
-Install dependencies:
+Install dependencies from the project root:
 
 ```bash
 npm install
@@ -202,22 +211,28 @@ Run seeders:
 npm run db:seed
 ```
 
-Start the development server:
+Start the monolith development server:
 
 ```bash
 npm run dev
 ```
 
-Start the production server:
+Start the monolith production server:
 
 ```bash
 npm start
 ```
 
+Run the gateway and service containers locally:
+
+```bash
+docker compose up --build
+```
+
 ## Available scripts
 
-- `npm run dev` starts the API with nodemon
-- `npm start` starts the API with Node.js
+- `npm run dev` starts the monolith API with nodemon
+- `npm start` starts the monolith API with Node.js
 - `npm test` runs the Jest unit and integration test suites
 - `npm run lint` runs ESLint
 - `npm run lint:fix` fixes ESLint issues automatically
@@ -257,3 +272,6 @@ node -e "import('./app.js').then(() => console.log('app import ok'))"
 - Keep migrations and seed data aligned with PostgreSQL snake_case columns.
 - Use Morgan for HTTP request logging and Pino for application, auth, localization, and error logs.
 - Uploaded files are served from the `uploads` folder through the application.
+- The gateway under `services/api-gateway` currently proxies loyalty, auth, and product routes to the corresponding service packages.
+
+

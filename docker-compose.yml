@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: clp-postgres
+    environment:
+      POSTGRES_DB: loyalty
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api-gateway:
+    build: ./services/api-gateway
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      AUTH_SERVICE_URL: http://auth-service:3003
+      PRODUCT_SERVICE_URL: http://product-service:3004
+      LOYALTY_SERVICE_URL: http://loyalty-service:3002
+    depends_on:
+      - auth-service
+      - product-service
+      - loyalty-service
+
+  auth-service:
+    build: ./services/auth-service
+    ports:
+      - "3003:3003"
+    environment:
+      PORT: 3003
+
+  product-service:
+    build: ./services/product-service
+    ports:
+      - "3004:3004"
+    environment:
+      PORT: 3004
+
+  loyalty-service:
+    build: ./services/loyalty-service
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+
+volumes:
+  postgres_data:
