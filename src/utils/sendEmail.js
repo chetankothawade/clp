@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import fs from "fs/promises";
 import path from "path";
 import handlebars from "handlebars";
+import logger from "./logger.js";
 
 class EmailService {
     constructor() {
@@ -39,7 +40,7 @@ class EmailService {
                 this.templateCache.set(templateKey, template);
             }
         }
-        console.log(`✅ Preloaded ${this.templateCache.size} email templates`);
+        logger.info(`Preloaded ${this.templateCache.size} email templates`);
     }
 
     /**
@@ -85,10 +86,10 @@ class EmailService {
                 attachments,
             });
 
-            console.log(`📧 Email sent to ${to}: ${info.messageId}`);
+            logger.info({ to, messageId: info.messageId }, "Email sent");
             return info;
         } catch (err) {
-            console.error("Email sending failed:", err);
+            logger.error({ err }, "Email sending failed");
             const error = new Error(err.message || "Failed to send email");
             error.cause = err;
             throw error;
@@ -103,5 +104,5 @@ export const emailService = new EmailService();
 // Preload templates at server startup
 const templatesDir = path.join(process.cwd(), "emails", "templates");
 emailService.preloadTemplates(templatesDir).catch((err) => {
-    console.error("Failed to preload email templates:", err);
+    logger.error({ err }, "Failed to preload email templates");
 });

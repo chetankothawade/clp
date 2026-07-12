@@ -95,6 +95,6 @@ export const handleError = (
   }
 
   // Fallback for unexpected runtime errors.
-  console.error(logPrefix, error);
+  logger.error({ err: error, logPrefix }, "Controller error");
   return sendResponse(res, 500, false, fallbackMessage);
 };

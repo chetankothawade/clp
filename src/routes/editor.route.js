@@ -2,6 +2,7 @@
 import express from "express";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 import { uploadEditor } from "../utils/multer.js";
+import logger from "../utils/logger.js";
 
 
 const router = express.Router();
@@ -24,7 +25,7 @@ router.post(
         url: fileUrl, // 👈 CKEditor expects { default: "url" }, but we can handle that on frontend
       });
     } catch (err) {
-      console.error(err);
+      logger.error({ err }, "Editor upload failed");
       return res.status(500).json({ success: false, message: "Server error" });
     }
   }
