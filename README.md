@@ -24,7 +24,6 @@ Customer Loyalty Program is a Node.js backend API for managing users, rewards, p
 - Morgan for HTTP request logging
 - Pino for application and error logging
 - Multer and Cloudinary for uploads
-- Socket.io support for future chat/integration features
 - ESLint with Node and security rules
 - Jest for unit and integration testing
 
