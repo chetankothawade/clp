@@ -26,6 +26,7 @@ Customer Loyalty Program is a Node.js backend API for managing users, rewards, p
 - Multer and Cloudinary for uploads
 - Socket.io support for future chat/integration features
 - ESLint with Node and security rules
+- Jest for unit and integration testing
 
 ## Project structure
 
@@ -218,6 +219,7 @@ npm start
 
 - `npm run dev` starts the API with nodemon
 - `npm start` starts the API with Node.js
+- `npm test` runs the Jest unit and integration test suites
 - `npm run lint` runs ESLint
 - `npm run lint:fix` fixes ESLint issues automatically
 - `npm run db:migrate` runs Sequelize migrations
@@ -226,12 +228,27 @@ npm start
 - `npm run db:seed:undo` reverts all seeders
 - `npm run postman:generate` generates a Postman collection from the app entry point
 
+## Testing
+
+The project includes Jest-based tests for both controller/unit behavior and route integration.
+
+- Unit tests live under `tests/unit`
+- Integration tests live under `tests/integration`
+- Run the full suite with `npm test`
+
+Example:
+
+```bash
+npm test
+```
+
 ## Verification
 
 Useful checks after changes:
 
 ```bash
 npm run lint
+npm test
 node -e "import('./app.js').then(() => console.log('app import ok'))"
 ```
 
