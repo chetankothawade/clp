@@ -15,7 +15,7 @@ API Gateway
   |---- /api/v1/purchases, /rewards,
   |     /redemptions, /dashboard ---------------> Loyalty Service ---> loyalty_db
   |
-  `---- /api/v1/cms, /editor,  -------> Monolith initially (extract later as Admin/CMS)
+  `---- ---- /api/v1/cms, /editor,  -------> Admin/CMS Service  ---> admin_db (extract later as Admin/CMS)
                                                     
 ```
 
