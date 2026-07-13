@@ -2,7 +2,7 @@
 
 import { randomUUID } from 'crypto';
 
-const PRODUCT_SKUS = ['LOYALTY-COFFEE', 'LOYALTY-BACKPACK', 'LOYALTY-HEADPHONES'];
+const PRODUCT_SKUS = ['LOYALTY-DEMO-COFFEE', 'LOYALTY-DEMO-BACKPACK', 'LOYALTY-DEMO-HEADPHONES'];
 
 const daysAgo = (days) => {
   const date = new Date();
@@ -18,7 +18,7 @@ export async function up(queryInterface) {
   if (!users.length) throw new Error('Run the user seeder before the purchase seeder.');
 
   const [products] = await queryInterface.sequelize.query(
-    "SELECT id, sku, price, loyalty_points FROM products WHERE sku IN ('LOYALTY-COFFEE', 'LOYALTY-BACKPACK', 'LOYALTY-HEADPHONES') ORDER BY id ASC"
+    "SELECT id, sku, price, loyalty_points FROM products WHERE sku IN ('LOYALTY-DEMO-COFFEE', 'LOYALTY-DEMO-BACKPACK', 'LOYALTY-DEMO-HEADPHONES') ORDER BY id ASC"
   );
   if (products.length !== PRODUCT_SKUS.length) {
     throw new Error('Run the product seeder before the purchase seeder.');
@@ -26,11 +26,11 @@ export async function up(queryInterface) {
 
   const productBySku = Object.fromEntries(products.map((product) => [product.sku, product]));
   const rows = [
-    { user: users[0], product: productBySku['LOYALTY-HEADPHONES'], quantity: 2, date: daysAgo(5) },
-    { user: users[0], product: productBySku['LOYALTY-BACKPACK'], quantity: 1, date: daysAgo(3) },
-    { user: users[Math.min(1, users.length - 1)], product: productBySku['LOYALTY-BACKPACK'], quantity: 2, date: daysAgo(4) },
-    { user: users[Math.min(1, users.length - 1)], product: productBySku['LOYALTY-COFFEE'], quantity: 1, date: daysAgo(2) },
-    { user: users[Math.min(2, users.length - 1)], product: productBySku['LOYALTY-HEADPHONES'], quantity: 1, date: daysAgo(1) },
+    { user: users[0], product: productBySku['LOYALTY-DEMO-HEADPHONES'], quantity: 2, date: daysAgo(5) },
+    { user: users[0], product: productBySku['LOYALTY-DEMO-BACKPACK'], quantity: 1, date: daysAgo(3) },
+    { user: users[Math.min(1, users.length - 1)], product: productBySku['LOYALTY-DEMO-BACKPACK'], quantity: 2, date: daysAgo(4) },
+    { user: users[Math.min(1, users.length - 1)], product: productBySku['LOYALTY-DEMO-COFFEE'], quantity: 1, date: daysAgo(2) },
+    { user: users[Math.min(2, users.length - 1)], product: productBySku['LOYALTY-DEMO-HEADPHONES'], quantity: 1, date: daysAgo(1) },
   ];
 
   return queryInterface.bulkInsert('purchases', rows.map(({ user, product, quantity, date }) => ({
@@ -50,7 +50,7 @@ export async function up(queryInterface) {
 
 export async function down(queryInterface, Sequelize) {
   const [products] = await queryInterface.sequelize.query(
-    "SELECT id FROM products WHERE sku IN ('LOYALTY-COFFEE', 'LOYALTY-BACKPACK', 'LOYALTY-HEADPHONES')"
+    "SELECT id FROM products WHERE sku IN ('LOYALTY-DEMO-COFFEE', 'LOYALTY-DEMO-BACKPACK', 'LOYALTY-DEMO-HEADPHONES')"
   );
   if (products.length) {
     await queryInterface.bulkDelete('purchases', { product_id: { [Sequelize.Op.in]: products.map((product) => product.id) } });

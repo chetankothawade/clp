@@ -21,13 +21,10 @@
     { "key": "reward_uuid", "value": "" },
     { "key": "purchase_uuid", "value": "" },
     { "key": "redemption_uuid", "value": "" }
-  
   ],
   "auth": {
     "type": "bearer",
-    "bearer": [
-      { "key": "token", "value": "{{token}}", "type": "string" }
-    ]
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
   },
   "item": [
     {
@@ -127,7 +124,11 @@
       "item": [
         {
           "name": "GET /api/v1/user/me",
-          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user/me" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/user/me"
+          }
         },
         {
           "name": "GET /api/v1/user/list",
@@ -176,11 +177,19 @@
         },
         {
           "name": "PATCH /api/v1/user/delete/:uuid",
-          "request": { "method": "PATCH", "header": [], "url": "{{base_url}}/api/v1/user/delete/{{uuid}}" }
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{base_url}}/api/v1/user/delete/{{uuid}}"
+          }
         },
         {
           "name": "GET /api/v1/user/get/:uuid",
-          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user/get/{{uuid}}" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/user/get/{{uuid}}"
+          }
         },
         {
           "name": "PUT /api/v1/user/status/:uuid",
@@ -193,11 +202,19 @@
         },
         {
           "name": "GET /api/v1/user/getList",
-          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user/getList" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/user/getList"
+          }
         },
         {
           "name": "GET /api/v1/user/export/csv",
-          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user/export/csv" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/user/export/csv"
+          }
         }
       ]
     },
@@ -206,7 +223,11 @@
       "item": [
         {
           "name": "GET /api/v1/access/:userId",
-          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/access/{{userId}}" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/access/{{userId}}"
+          }
         }
       ]
     },
@@ -215,11 +236,19 @@
       "item": [
         {
           "name": "GET /api/v1/module/list",
-          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/module/list" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/module/list"
+          }
         },
         {
           "name": "GET /api/v1/module/list/:id",
-          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/module/list/{{moduleId}}" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/module/list/{{moduleId}}"
+          }
         },
         {
           "name": "POST /api/v1/module/create",
@@ -247,11 +276,19 @@
         },
         {
           "name": "DELETE /api/v1/module/delete/:uuid",
-          "request": { "method": "DELETE", "header": [], "url": "{{base_url}}/api/v1/module/delete/{{uuid}}" }
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/api/v1/module/delete/{{uuid}}"
+          }
         },
         {
           "name": "GET /api/v1/module/get/:uuid",
-          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/module/get/{{uuid}}" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/module/get/{{uuid}}"
+          }
         },
         {
           "name": "PUT /api/v1/module/status/:uuid",
@@ -264,7 +301,11 @@
         },
         {
           "name": "GET /api/v1/module/getList",
-          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/module/getList" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/module/getList"
+          }
         }
       ]
     },
@@ -273,7 +314,11 @@
       "item": [
         {
           "name": "GET /api/v1/role-modules/matrix",
-          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/role-modules/matrix" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/role-modules/matrix"
+          }
         },
         {
           "name": "POST /api/v1/role-modules/toggle",
@@ -306,28 +351,50 @@
         },
         {
           "name": "GET /api/v1/user-permissions/getAll/:uuid",
-          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user-permissions/getAll/{{uuid}}" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/user-permissions/getAll/{{uuid}}"
+          }
         },
         {
           "name": "GET /api/v1/user-permissions/module-access/:uuid",
-          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user-permissions/module-access/{{uuid}}" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/user-permissions/module-access/{{uuid}}"
+          }
         },
         {
           "name": "GET /api/v1/user-permissions/side-menu",
-          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/user-permissions/side-menu" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/user-permissions/side-menu"
+          }
         }
       ]
     },
     {
       "name": "CMS",
       "item": [
-        { "name": "GET /api/v1/cms/list", "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/cms/list" } },
+        {
+          "name": "GET /api/v1/cms/list",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/cms/list"
+          }
+        },
         {
           "name": "POST /api/v1/cms/create",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Terms\",\n  \"slug\": \"terms\",\n  \"content\": \"Terms content\",\n  \"status\": \"active\"\n}" },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Terms\",\n  \"slug\": \"terms\",\n  \"content\": \"Terms content\",\n  \"status\": \"active\"\n}"
+            },
             "url": "{{base_url}}/api/v1/cms/create"
           }
         },
@@ -336,12 +403,29 @@
           "request": {
             "method": "PUT",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Terms\",\n  \"slug\": \"terms\",\n  \"content\": \"Updated terms content\",\n  \"status\": \"active\"\n}" },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Terms\",\n  \"slug\": \"terms\",\n  \"content\": \"Updated terms content\",\n  \"status\": \"active\"\n}"
+            },
             "url": "{{base_url}}/api/v1/cms/update/{{uuid}}"
           }
         },
-        { "name": "DELETE /api/v1/cms/delete/:uuid", "request": { "method": "DELETE", "header": [], "url": "{{base_url}}/api/v1/cms/delete/{{uuid}}" } },
-        { "name": "GET /api/v1/cms/get/:uuid", "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/cms/get/{{uuid}}" } },
+        {
+          "name": "DELETE /api/v1/cms/delete/:uuid",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/api/v1/cms/delete/{{uuid}}"
+          }
+        },
+        {
+          "name": "GET /api/v1/cms/get/:uuid",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/cms/get/{{uuid}}"
+          }
+        },
         {
           "name": "PUT /api/v1/cms/status/:uuid",
           "request": {
@@ -363,9 +447,7 @@
             "header": [],
             "body": {
               "mode": "formdata",
-              "formdata": [
-                { "key": "image", "type": "file", "src": "" }
-              ]
+              "formdata": [{ "key": "image", "type": "file", "src": "" }]
             },
             "url": "{{base_url}}/api/v1/editor/upload"
           }
@@ -375,14 +457,31 @@
     {
       "name": "Categories",
       "item": [
-        { "name": "GET /api/v1/category/list", "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/category/list" } },
-        { "name": "GET /api/v1/category/list/:id", "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/category/list/{{moduleId}}" } },
+        {
+          "name": "GET /api/v1/category/list",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/category/list"
+          }
+        },
+        {
+          "name": "GET /api/v1/category/list/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/category/list/{{moduleId}}"
+          }
+        },
         {
           "name": "POST /api/v1/category/create",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"General\",\n  \"parentId\": 0,\n  \"status\": \"active\"\n}" },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"General\",\n  \"parentId\": 0,\n  \"status\": \"active\"\n}"
+            },
             "url": "{{base_url}}/api/v1/category/create"
           }
         },
@@ -391,12 +490,29 @@
           "request": {
             "method": "PUT",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"General\",\n  \"parentId\": 0,\n  \"status\": \"active\"\n}" },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"General\",\n  \"parentId\": 0,\n  \"status\": \"active\"\n}"
+            },
             "url": "{{base_url}}/api/v1/category/update/{{uuid}}"
           }
         },
-        { "name": "DELETE /api/v1/category/delete/:uuid", "request": { "method": "DELETE", "header": [], "url": "{{base_url}}/api/v1/category/delete/{{uuid}}" } },
-        { "name": "GET /api/v1/category/get/:uuid", "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/category/get/{{uuid}}" } },
+        {
+          "name": "DELETE /api/v1/category/delete/:uuid",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/api/v1/category/delete/{{uuid}}"
+          }
+        },
+        {
+          "name": "GET /api/v1/category/get/:uuid",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/category/get/{{uuid}}"
+          }
+        },
         {
           "name": "PUT /api/v1/category/status/:uuid",
           "request": {
@@ -406,7 +522,14 @@
             "url": "{{base_url}}/api/v1/category/status/{{uuid}}"
           }
         },
-        { "name": "GET /api/v1/category/getList", "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/v1/category/getList" } }
+        {
+          "name": "GET /api/v1/category/getList",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/v1/category/getList"
+          }
+        }
       ]
     },
     {
@@ -421,22 +544,54 @@
               "request": {
                 "method": "POST",
                 "auth": { "type": "noauth" },
-                "header": [{ "key": "Content-Type", "value": "application/json" }],
-                "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@yopmail.com\",\n  \"password\": \"Admin@123\"\n}" },
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"admin@yopmail.com\",\n  \"password\": \"Admin@123\"\n}"
+                },
                 "url": "{{base_url}}/api/v1/login"
               },
-              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const response = pm.response.json();", "pm.collectionVariables.set('admin_token', response.data.token);"] } }]
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json();",
+                      "pm.collectionVariables.set('admin_token', response.data.token);"
+                    ]
+                  }
+                }
+              ]
             },
             {
               "name": "POST Login - Customer Seeder",
               "request": {
                 "method": "POST",
                 "auth": { "type": "noauth" },
-                "header": [{ "key": "Content-Type", "value": "application/json" }],
-                "body": { "mode": "raw", "raw": "{\n  \"email\": \"user@yopmail.com\",\n  \"password\": \"User@123\"\n}" },
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"user@yopmail.com\",\n  \"password\": \"User@123\"\n}"
+                },
                 "url": "{{base_url}}/api/v1/login"
               },
-              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const response = pm.response.json();", "pm.collectionVariables.set('customer_token', response.data.token);"] } }]
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json();",
+                      "pm.collectionVariables.set('customer_token', response.data.token);"
+                    ]
+                  }
+                }
+              ]
             }
           ]
         },
@@ -447,20 +602,122 @@
               "name": "POST Create Product",
               "request": {
                 "method": "POST",
-                "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] },
-                "header": [{ "key": "Content-Type", "value": "application/json" }],
-                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Postman Demo Product\",\n  \"sku\": \"POSTMAN-DEMO-001\",\n  \"price\": 999.00,\n  \"description\": \"Created from Postman\",\n  \"loyalty_points\": 100,\n  \"category_id\": {{category_id}}\n}" },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Postman Demo Product\",\n  \"sku\": \"POSTMAN-DEMO-001\",\n  \"price\": 999.00,\n  \"description\": \"Created from Postman\",\n  \"loyalty_points\": 100,\n  \"category_id\": {{category_id}}\n}"
+                },
                 "url": "{{base_url}}/api/v1/products"
               },
-              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const response = pm.response.json();", "pm.collectionVariables.set('product_uuid', response.data.product.uuid);"] } }]
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json();",
+                      "pm.collectionVariables.set('product_uuid', response.data.product.uuid);"
+                    ]
+                  }
+                }
+              ]
             },
-            { "name": "GET List Products", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/products?page=1&limit=10" } },
-            { "name": "GET Product Details", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/products/{{product_uuid}}" } },
+            {
+              "name": "GET List Products",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [],
+                "url": "{{base_url}}/api/v1/products?page=1&limit=10"
+              }
+            },
+            {
+              "name": "GET Product Details",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [],
+                "url": "{{base_url}}/api/v1/products/{{product_uuid}}"
+              }
+            },
             {
               "name": "PUT Update Product",
-              "request": { "method": "PUT", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Postman Product\",\n  \"sku\": \"POSTMAN-DEMO-001\",\n  \"price\": 1099.00,\n  \"description\": \"Updated from Postman\",\n  \"loyalty_points\": 110,\n  \"category_id\": {{category_id}}\n}" }, "url": "{{base_url}}/api/v1/products/{{product_uuid}}" }
+              "request": {
+                "method": "PUT",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Updated Postman Product\",\n  \"sku\": \"POSTMAN-DEMO-001\",\n  \"price\": 1099.00,\n  \"description\": \"Updated from Postman\",\n  \"loyalty_points\": 110,\n  \"category_id\": {{category_id}}\n}"
+                },
+                "url": "{{base_url}}/api/v1/products/{{product_uuid}}"
+              }
             },
-            { "name": "PATCH Product Status", "request": { "method": "PATCH", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}" }, "url": "{{base_url}}/api/v1/products/{{product_uuid}}/status" } }
+            {
+              "name": "PATCH Product Status",
+              "request": {
+                "method": "PATCH",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"active\"\n}"
+                },
+                "url": "{{base_url}}/api/v1/products/{{product_uuid}}/status"
+              }
+            }
           ]
         },
         {
@@ -468,37 +725,330 @@
           "item": [
             {
               "name": "POST Create Reward",
-              "request": { "method": "POST", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Postman Gift Voucher\",\n  \"description\": \"Created from Postman\",\n  \"reward_type\": \"voucher\",\n  \"points_required\": 100,\n  \"stock\": 10\n}" }, "url": "{{base_url}}/api/v1/rewards" },
-              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const response = pm.response.json();", "pm.collectionVariables.set('reward_uuid', response.data.reward.uuid);"] } }]
+              "request": {
+                "method": "POST",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Postman Gift Voucher\",\n  \"description\": \"Created from Postman\",\n  \"reward_type\": \"voucher\",\n  \"points_required\": 100,\n  \"stock\": 10\n}"
+                },
+                "url": "{{base_url}}/api/v1/rewards"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json();",
+                      "pm.collectionVariables.set('reward_uuid', response.data.reward.uuid);"
+                    ]
+                  }
+                }
+              ]
             },
-            { "name": "GET List Rewards", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/rewards?page=1&limit=10" } },
-            { "name": "GET Reward Details", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/rewards/{{reward_uuid}}" } },
-            { "name": "PUT Update Reward", "request": { "method": "PUT", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Postman Gift Voucher\",\n  \"description\": \"Updated from Postman\",\n  \"reward_type\": \"voucher\",\n  \"points_required\": 100,\n  \"stock\": 10\n}" }, "url": "{{base_url}}/api/v1/rewards/{{reward_uuid}}" } },
-            { "name": "PATCH Reward Status", "request": { "method": "PATCH", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}" }, "url": "{{base_url}}/api/v1/rewards/{{reward_uuid}}/status" } }
+            {
+              "name": "GET List Rewards",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [],
+                "url": "{{base_url}}/api/v1/rewards?page=1&limit=10"
+              }
+            },
+            {
+              "name": "GET Reward Details",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [],
+                "url": "{{base_url}}/api/v1/rewards/{{reward_uuid}}"
+              }
+            },
+            {
+              "name": "PUT Update Reward",
+              "request": {
+                "method": "PUT",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Updated Postman Gift Voucher\",\n  \"description\": \"Updated from Postman\",\n  \"reward_type\": \"voucher\",\n  \"points_required\": 100,\n  \"stock\": 10\n}"
+                },
+                "url": "{{base_url}}/api/v1/rewards/{{reward_uuid}}"
+              }
+            },
+            {
+              "name": "PATCH Reward Status",
+              "request": {
+                "method": "PATCH",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"active\"\n}"
+                },
+                "url": "{{base_url}}/api/v1/rewards/{{reward_uuid}}/status"
+              }
+            }
           ]
         },
         {
           "name": "Customer - Loyalty",
           "item": [
-            { "name": "GET Dashboard", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/dashboard" } },
-            { "name": "GET Available Rewards", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/rewards?page=1&limit=10" } },
-            { "name": "GET Reward Details", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/rewards/{{reward_uuid}}" } },
+            {
+              "name": "GET Dashboard",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{customer_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [],
+                "url": "{{base_url}}/api/v1/dashboard"
+              }
+            },
+            {
+              "name": "GET Available Rewards",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{customer_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [],
+                "url": "{{base_url}}/api/v1/rewards?page=1&limit=10"
+              }
+            },
+            {
+              "name": "GET Reward Details",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{customer_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [],
+                "url": "{{base_url}}/api/v1/rewards/{{reward_uuid}}"
+              }
+            },
             {
               "name": "POST Create Purchase",
-              "request": { "method": "POST", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"product_uuid\": \"{{product_uuid}}\",\n  \"quantity\": 1\n}" }, "url": "{{base_url}}/api/v1/purchases" },
-              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const response = pm.response.json();", "pm.collectionVariables.set('purchase_uuid', response.data.purchase.uuid);"] } }]
+              "request": {
+                "method": "POST",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{customer_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_uuid\": \"{{product_uuid}}\",\n  \"quantity\": 1\n}"
+                },
+                "url": "{{base_url}}/api/v1/purchases"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json();",
+                      "pm.collectionVariables.set('purchase_uuid', response.data.purchase.uuid);"
+                    ]
+                  }
+                }
+              ]
             },
-            { "name": "GET Purchase History", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/purchases?page=1&limit=10" } },
-            { "name": "GET Purchase Details", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/purchases/{{purchase_uuid}}" } },
+            {
+              "name": "GET Purchase History",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{customer_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [],
+                "url": "{{base_url}}/api/v1/purchases?page=1&limit=10"
+              }
+            },
+            {
+              "name": "GET Purchase Details",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{customer_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [],
+                "url": "{{base_url}}/api/v1/purchases/{{purchase_uuid}}"
+              }
+            },
             {
               "name": "POST Redeem Reward",
-              "request": { "method": "POST", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"reward_uuid\": \"{{reward_uuid}}\"\n}" }, "url": "{{base_url}}/api/v1/redemptions" },
-              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const response = pm.response.json();", "pm.collectionVariables.set('redemption_uuid', response.data.redemption.uuid);"] } }]
+              "request": {
+                "method": "POST",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{customer_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reward_uuid\": \"{{reward_uuid}}\"\n}"
+                },
+                "url": "{{base_url}}/api/v1/redemptions"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json();",
+                      "pm.collectionVariables.set('redemption_uuid', response.data.redemption.uuid);"
+                    ]
+                  }
+                }
+              ]
             },
-            { "name": "GET Redemption History", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/redemptions?page=1&limit=10" } },
-            { "name": "GET Redemption Details", "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{customer_token}}", "type": "string" }] }, "header": [], "url": "{{base_url}}/api/v1/redemptions/{{redemption_uuid}}" } }
+            {
+              "name": "GET Redemption History",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{customer_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [],
+                "url": "{{base_url}}/api/v1/redemptions?page=1&limit=10"
+              }
+            },
+            {
+              "name": "GET Redemption Details",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{customer_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [],
+                "url": "{{base_url}}/api/v1/redemptions/{{redemption_uuid}}"
+              }
+            }
           ]
         }
-   
+      ]
+    }
   ]
 }
