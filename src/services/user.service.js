@@ -36,8 +36,11 @@ const buildAvatarUrl = (req, filename) => {
 const removeAvatarFromDisk = (avatarUrl) => {
   if (!avatarUrl) return;
   // Avatar is stored as full URL; keep only filename for local filesystem delete.
-  const oldFile = path.join("uploads", path.basename(avatarUrl));
+  const safeFilename = path.basename(avatarUrl);
+  const oldFile = path.resolve(process.cwd(), "uploads", safeFilename);
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
   if (fs.existsSync(oldFile)) {
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
     fs.unlinkSync(oldFile);
   }
 };

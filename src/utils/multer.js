@@ -2,9 +2,13 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
+const uploadDirectories = ['uploads/images', 'uploads/docs', 'uploads/editor', 'uploads/chat'];
+
 // Ensure upload directories exist
-['uploads/images', 'uploads/docs', 'uploads/editor', 'uploads/chat'].forEach(dir => {
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+uploadDirectories.forEach((dir) => {
+    const targetDir = path.resolve(process.cwd(), dir);
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
 });
 
 // Common storage function

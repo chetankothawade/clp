@@ -30,10 +30,12 @@ class EmailService {
      * Preload templates into cache
      */
     async preloadTemplates(templatesDir) {
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
         const files = await fs.readdir(templatesDir);
         for (const file of files) {
             if (file.endsWith(".html")) {
                 const filePath = path.join(templatesDir, file);
+                // eslint-disable-next-line security/detect-non-literal-fs-filename
                 const source = await fs.readFile(filePath, "utf8");
                 const template = handlebars.compile(source);
                 const templateKey = path.parse(file).name;

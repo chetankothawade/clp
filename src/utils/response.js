@@ -25,6 +25,8 @@
  * @param {object} [data={}] - Additional response data
  * @param {object} [vars={}] - Variables for message interpolation
  */
+import logger from "./logger.js";
+
 export const sendResponse = (res, status, success, message, data = {}, vars = {}) => {
   // Get request from response to use i18n
   const req = res.req;
