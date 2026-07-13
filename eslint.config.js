@@ -55,4 +55,15 @@ export default [
       "no-unused-vars": "off",
     },
   },
+  {
+    files: ["tests/**/*.js"],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
+    rules: {
+      "n/no-unpublished-import": "off",
+    },
+  },
 ];

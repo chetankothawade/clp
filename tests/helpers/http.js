@@ -1,6 +1,45 @@
+import http from "node:http";
 import express from "express";
 
 const buildUrl = (baseUrl, path) => new URL(path, baseUrl).toString();
+
+function makeHttpRequest(url, { method = "GET", headers = {}, body } = {}) {
+  return new Promise((resolve, reject) => {
+    const request = http.request(
+      url,
+      {
+        method,
+        headers,
+      },
+      (response) => {
+        const chunks = [];
+
+        response.on("data", (chunk) => chunks.push(chunk));
+        response.on("end", () => {
+          const rawBody = Buffer.concat(chunks).toString("utf8");
+          const contentType = response.headers["content-type"] || "";
+          const data = contentType.includes("application/json") && rawBody
+            ? JSON.parse(rawBody)
+            : rawBody;
+
+          resolve({
+            status: response.statusCode || 200,
+            data,
+            headers: response.headers,
+          });
+        });
+      },
+    );
+
+    request.on("error", reject);
+
+    if (body !== undefined) {
+      request.write(body);
+    }
+
+    request.end();
+  });
+}
 
 export async function createHttpTestClient(router, { basePath = "/" } = {}) {
   const app = express();
@@ -21,7 +60,7 @@ export async function createHttpTestClient(router, { basePath = "/" } = {}) {
     body,
     headers = {},
   } = {}) => {
-    const response = await fetch(buildUrl(baseUrl, path), {
+    const response = await makeHttpRequest(buildUrl(baseUrl, path), {
       method,
       headers: {
         ...(body ? { "content-type": "application/json" } : {}),
@@ -30,12 +69,7 @@ export async function createHttpTestClient(router, { basePath = "/" } = {}) {
       body: body ? JSON.stringify(body) : undefined,
     });
 
-    const contentType = response.headers.get("content-type") || "";
-    const data = contentType.includes("application/json")
-      ? await response.json()
-      : await response.text();
-
-    return { status: response.status, data, headers: response.headers };
+    return response;
   };
 
   const close = async () =>
