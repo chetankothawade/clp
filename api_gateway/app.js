@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 
 const app = express();
 const timeoutMs = Number.parseInt(process.env.DOWNSTREAM_TIMEOUT_MS, 10) || 5000;
+const jwtAlgorithm = process.env.JWT_ALGORITHM || (process.env.JWT_PUBLIC_KEY ? "RS256" : "HS256");
 const services = {
   auth: process.env.AUTH_SERVICE_URL || "http://127.0.0.1:8001",
   product: process.env.PRODUCT_SERVICE_URL || "http://127.0.0.1:8002",
@@ -14,6 +15,12 @@ const services = {
   admin: process.env.ADMIN_SERVICE_URL || "http://127.0.0.1:8004",
 };
 const publicPaths = new Set(["/api/v1/register", "/api/v1/login", "/api/v1/forgot-password"]);
+
+if (process.env.NODE_ENV === "production" && !["RS256", "ES256"].includes(jwtAlgorithm)) {
+  throw new Error("Production gateway requires JWT_ALGORITHM=RS256 or ES256");
+}
+
+const logProxy = (entry) => console.info(JSON.stringify({ timestamp: new Date().toISOString(), component: "api-gateway", ...entry }));
 
 app.use(helmet());
 app.use(cors());
@@ -32,7 +39,7 @@ function identity(req, res, next) {
   if (!token) return res.status(401).json({ success: false, message: "Authorization required", requestId: req.requestId });
   try {
     req.identity = jwt.verify(token, process.env.JWT_PUBLIC_KEY || process.env.JWT_PRIVATE_KEY || process.env.SECRET_KEY, {
-      algorithms: [process.env.JWT_ALGORITHM || "HS256"], issuer: "auth-service", audience: "clp-api",
+      algorithms: [jwtAlgorithm], issuer: "auth-service", audience: "clp-api",
     });
     return next();
   } catch {
@@ -42,6 +49,7 @@ function identity(req, res, next) {
 
 function proxy(service) {
   return async (req, res) => {
+    const startedAt = Date.now();
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     const target = new URL(req.originalUrl, services[service]);
@@ -56,11 +64,21 @@ function proxy(service) {
     }
     try {
       const response = await fetch(target, { method: req.method, headers, body: ["GET", "HEAD"].includes(req.method) ? undefined : JSON.stringify(req.body), signal: controller.signal });
+      if (!response.ok) {
+        let downstreamBody = {};
+        try { downstreamBody = await response.json(); } catch { /* Downstream response is not JSON. */ }
+        const message = downstreamBody.message || `Downstream ${service} service returned an error`;
+        logProxy({ requestId: req.requestId, method: req.method, service, status: response.status, latencyMs: Date.now() - startedAt });
+        return res.status(response.status).json({ success: false, message, requestId: req.requestId, service, errors: downstreamBody.errors });
+      }
       res.status(response.status);
       for (const [name, value] of response.headers) if (["content-type", "set-cookie"].includes(name)) res.setHeader(name, value);
       res.send(Buffer.from(await response.arrayBuffer()));
+      logProxy({ requestId: req.requestId, method: req.method, service, status: response.status, latencyMs: Date.now() - startedAt });
     } catch (error) {
-      res.status(error.name === "AbortError" ? 504 : 502).json({ success: false, message: "Downstream service unavailable", requestId: req.requestId });
+      const status = error.name === "AbortError" ? 504 : 502;
+      logProxy({ requestId: req.requestId, method: req.method, service, status, latencyMs: Date.now() - startedAt, error: error.name });
+      res.status(status).json({ success: false, message: "Downstream service unavailable", requestId: req.requestId, service });
     } finally { clearTimeout(timer); }
   };
 }
