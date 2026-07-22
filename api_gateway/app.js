@@ -7,6 +7,9 @@ import jwt from "jsonwebtoken";
 
 const app = express();
 const timeoutMs = Number.parseInt(process.env.DOWNSTREAM_TIMEOUT_MS, 10) || 5000;
+const readRetryCount = Number.parseInt(process.env.DOWNSTREAM_READ_RETRIES, 10) || 1;
+const circuitFailureThreshold = Number.parseInt(process.env.DOWNSTREAM_CIRCUIT_FAILURES, 10) || 3;
+const circuitOpenMs = Number.parseInt(process.env.DOWNSTREAM_CIRCUIT_OPEN_MS, 10) || 30_000;
 const jwtAlgorithm = process.env.JWT_ALGORITHM || (process.env.JWT_PUBLIC_KEY ? "RS256" : "HS256");
 const services = {
   auth: process.env.AUTH_SERVICE_URL || "http://127.0.0.1:8001",
@@ -21,6 +24,30 @@ if (process.env.NODE_ENV === "production" && !["RS256", "ES256"].includes(jwtAlg
 }
 
 const logProxy = (entry) => console.info(JSON.stringify({ timestamp: new Date().toISOString(), component: "api-gateway", ...entry }));
+const circuits = new Map();
+const isReadMethod = (method) => ["GET", "HEAD", "OPTIONS"].includes(method);
+
+function getCircuit(service) {
+  if (!circuits.has(service)) circuits.set(service, { failures: 0, openedUntil: 0 });
+  return circuits.get(service);
+}
+
+function isCircuitOpen(service) {
+  const circuit = getCircuit(service);
+  if (Date.now() >= circuit.openedUntil) return false;
+  return true;
+}
+
+function recordCircuitResult(service, ok) {
+  const circuit = getCircuit(service);
+  if (ok) {
+    circuit.failures = 0;
+    circuit.openedUntil = 0;
+    return;
+  }
+  circuit.failures += 1;
+  if (circuit.failures >= circuitFailureThreshold) circuit.openedUntil = Date.now() + circuitOpenMs;
+}
 
 app.use(helmet());
 app.use(cors());
@@ -50,8 +77,6 @@ function identity(req, res, next) {
 function proxy(service) {
   return async (req, res) => {
     const startedAt = Date.now();
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
     const target = new URL(req.originalUrl, services[service]);
     const headers = { "X-Request-Id": req.requestId };
     if (req.get("content-type")) headers["content-type"] = req.get("content-type");
@@ -62,24 +87,46 @@ function proxy(service) {
       headers["X-User-Role"] = req.identity.role;
       headers["X-User-Permissions"] = JSON.stringify(req.identity.permissions || []);
     }
+    if (isCircuitOpen(service)) {
+      logProxy({ requestId: req.requestId, callerService: "api-gateway", targetService: service, method: req.method, status: 503, latencyMs: Date.now() - startedAt, error: "CircuitOpen" });
+      return res.status(503).json({ success: false, message: "Downstream service temporarily unavailable", requestId: req.requestId, service });
+    }
+
+    const maxAttempts = isReadMethod(req.method) ? readRetryCount + 1 : 1;
+    let lastError;
     try {
-      const response = await fetch(target, { method: req.method, headers, body: ["GET", "HEAD"].includes(req.method) ? undefined : JSON.stringify(req.body), signal: controller.signal });
+      let response;
+      for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeoutMs);
+        try {
+          response = await fetch(target, { method: req.method, headers, body: ["GET", "HEAD"].includes(req.method) ? undefined : JSON.stringify(req.body), signal: controller.signal });
+          if (!isReadMethod(req.method) || response.status < 500 || attempt === maxAttempts) break;
+        } catch (error) {
+          lastError = error;
+          if (!isReadMethod(req.method) || attempt === maxAttempts) throw error;
+        } finally { clearTimeout(timer); }
+      }
+
       if (!response.ok) {
         let downstreamBody = {};
         try { downstreamBody = await response.json(); } catch { /* Downstream response is not JSON. */ }
         const message = downstreamBody.message || `Downstream ${service} service returned an error`;
-        logProxy({ requestId: req.requestId, method: req.method, service, status: response.status, latencyMs: Date.now() - startedAt });
+        recordCircuitResult(service, response.status < 500);
+        logProxy({ requestId: req.requestId, callerService: "api-gateway", targetService: service, method: req.method, status: response.status, latencyMs: Date.now() - startedAt });
         return res.status(response.status).json({ success: false, message, requestId: req.requestId, service, errors: downstreamBody.errors });
       }
+      recordCircuitResult(service, true);
       res.status(response.status);
       for (const [name, value] of response.headers) if (["content-type", "set-cookie"].includes(name)) res.setHeader(name, value);
       res.send(Buffer.from(await response.arrayBuffer()));
-      logProxy({ requestId: req.requestId, method: req.method, service, status: response.status, latencyMs: Date.now() - startedAt });
+      logProxy({ requestId: req.requestId, callerService: "api-gateway", targetService: service, method: req.method, status: response.status, latencyMs: Date.now() - startedAt });
     } catch (error) {
       const status = error.name === "AbortError" ? 504 : 502;
-      logProxy({ requestId: req.requestId, method: req.method, service, status, latencyMs: Date.now() - startedAt, error: error.name });
+      recordCircuitResult(service, false);
+      logProxy({ requestId: req.requestId, callerService: "api-gateway", targetService: service, method: req.method, status, latencyMs: Date.now() - startedAt, error: lastError?.name || error.name });
       res.status(status).json({ success: false, message: "Downstream service unavailable", requestId: req.requestId, service });
-    } finally { clearTimeout(timer); }
+    }
   };
 }
 
