@@ -9,7 +9,7 @@ import { purchaseService } from '../services/purchase.service.js';
  */
 export const createPurchase = async (req, res) => {
   try {
-    const purchase = await purchaseService.createPurchase(req.user.uuid || req.user.id, req.body, req.get('X-Request-Id'));
+    const purchase = await purchaseService.createPurchase(req.user.uuid || req.user.id, req.body, req.get('X-Request-Id'), req.get('Idempotency-Key'));
     return sendResponse(res, 201, true, 'purchase.create.success', { purchase });
   } catch (error) {
     return handleError(req, res, error, { logPrefix: 'Create purchase error:' });

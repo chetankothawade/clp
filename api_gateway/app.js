@@ -71,7 +71,8 @@ app.use("/api/v1", identity);
 app.use(["/api/v1/register", "/api/v1/login", "/api/v1/logout", "/api/v1/forgot-password", "/api/v1/reset-password", "/api/v1/user", "/api/v1/access", "/api/v1/module", "/api/v1/role-modules", "/api/v1/user-permissions"], proxy("auth"));
 // Phase 3: Product Service owns categories and products.
 app.use(["/api/v1/products", "/api/v1/category"], proxy("product"));
-app.use(["/api/v1/purchases", "/api/v1/rewards", "/api/v1/redemptions", "/api/v1/dashboard"], proxy("admin"));
+// Phase 4: Loyalty Service owns loyalty transactions and point balances.
+app.use(["/api/v1/purchases", "/api/v1/rewards", "/api/v1/redemptions", "/api/v1/dashboard"], proxy("loyalty"));
 app.use(["/api/v1/cms", "/api/v1/editor"], proxy("admin"));
 app.use((req, res) => res.status(404).json({ success: false, message: "Route not found", requestId: req.requestId }));
 export default app;

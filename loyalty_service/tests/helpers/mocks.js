@@ -6,6 +6,7 @@ export function createMockReq(overrides = {}) {
     params: {},
     query: {},
     user: { id: 1, role: "admin" },
+    get: jest.fn(),
     __: (key) => key,
     ...overrides,
   };
