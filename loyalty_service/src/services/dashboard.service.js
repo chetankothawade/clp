@@ -1,11 +1,9 @@
 import { Op } from 'sequelize';
 import db from '../models/index.js';
-import { BaseService } from './base.service.js';
+const { Purchase, Redemption, Reward } = db;
 
-const { Product, Purchase, Redemption, Reward, User } = db;
-
-const completedPurchaseWhere = (userId) => ({ userId, status: 'completed' });
-const completedRedemptionWhere = (userId) => ({ userId, status: 'completed' });
+const completedPurchaseWhere = (userUuid) => ({ userUuid, status: 'completed' });
+const completedRedemptionWhere = (userUuid) => ({ userUuid, status: 'completed' });
 const availableRewardWhere = () => ({
   status: 'active',
   stock: { [Op.gt]: 0 },
@@ -17,12 +15,11 @@ const toNumber = (value) => Number(value) || 0;
  * Builds the compact loyalty overview for one authenticated customer.
  */
 export const dashboardService = {
-  async getDashboard(userId) {
-    const purchaseWhere = completedPurchaseWhere(userId);
-    const redemptionWhere = completedRedemptionWhere(userId);
+  async getDashboard(userUuid) {
+    const purchaseWhere = completedPurchaseWhere(userUuid);
+    const redemptionWhere = completedRedemptionWhere(userUuid);
 
     const [
-      user,
       totalPurchases,
       totalAmountSpent,
       totalPointsEarned,
@@ -32,7 +29,6 @@ export const dashboardService = {
       recentRedemptions,
       availableRewards,
     ] = await Promise.all([
-      User.findByPk(userId, { attributes: ['uuid', 'name', 'email'] }),
       Purchase.count({ where: purchaseWhere }),
       Purchase.sum('totalAmount', { where: purchaseWhere }),
       Purchase.sum('pointsEarned', { where: purchaseWhere }),
@@ -40,7 +36,6 @@ export const dashboardService = {
       Redemption.sum('pointsUsed', { where: redemptionWhere }),
       Purchase.findAll({
         where: purchaseWhere,
-        include: [{ model: Product, as: 'product', attributes: ['name'] }],
         order: [['purchaseDate', 'DESC']],
         limit: 5,
       }),
@@ -53,13 +48,11 @@ export const dashboardService = {
       Reward.count({ where: availableRewardWhere() }),
     ]);
 
-    if (!user) BaseService.throwError(404, 'error.not_found');
-
     const earnedPoints = toNumber(totalPointsEarned);
     const redeemedPoints = toNumber(totalPointsRedeemed);
 
     return {
-      user,
+      user: { uuid: userUuid },
       summary: {
         totalPurchases,
         totalAmountSpent: toNumber(totalAmountSpent),
@@ -70,7 +63,7 @@ export const dashboardService = {
       },
       recentPurchases: recentPurchases.map((purchase) => ({
         purchaseUuid: purchase.uuid,
-        productName: purchase.product?.name || null,
+        productName: purchase.productName,
         quantity: purchase.quantity,
         amount: toNumber(purchase.totalAmount),
         pointsEarned: purchase.pointsEarned,

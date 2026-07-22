@@ -32,7 +32,8 @@ const isAuthenticated = async (req, res, next) => {
 
     // Attach user info to request
     req.user = {
-      id: decoded.id,
+      id: decoded.sub || decoded.id,
+      uuid: decoded.sub || decoded.id,
       role: decoded.role,
     };
 

@@ -3,7 +3,7 @@ import db from '../models/index.js';
 import { BaseService } from './base.service.js';
 import { buildPaginationMeta, getPaginationParams } from './pagination.service.js';
 
-const { Purchase, Redemption, Reward, User, sequelize } = db;
+const { Purchase, Redemption, Reward, sequelize } = db;
 
 const rewardInclude = [{
   model: Reward,
@@ -18,18 +18,15 @@ const availableRewardWhere = (uuid) => ({
   [Op.or]: [{ expiryDate: null }, { expiryDate: { [Op.gte]: new Date() } }],
 });
 
-const getAvailablePoints = async (userId, transaction) => {
-  const earned = Number(await Purchase.sum('pointsEarned', { where: { userId, status: 'completed' }, transaction })) || 0;
-  const used = Number(await Redemption.sum('pointsUsed', { where: { userId, status: 'completed' }, transaction })) || 0;
+const getAvailablePoints = async (userUuid, transaction) => {
+  const earned = Number(await Purchase.sum('pointsEarned', { where: { userUuid, status: 'completed' }, transaction })) || 0;
+  const used = Number(await Redemption.sum('pointsUsed', { where: { userUuid, status: 'completed' }, transaction })) || 0;
   return earned - used;
 };
 
 export const redemptionService = {
-  async createRedemption(userId, payload) {
+  async createRedemption(userUuid, payload) {
     return sequelize.transaction(async (transaction) => {
-      const user = await User.findByPk(userId, { transaction });
-      if (!user) BaseService.throwError(404, 'error.not_found');
-
       const reward = await Reward.findOne({
         where: availableRewardWhere(payload.reward_uuid),
         transaction,
@@ -37,11 +34,11 @@ export const redemptionService = {
       });
       if (!reward) BaseService.throwError(404, 'redemption.reward_not_available');
 
-      const availablePoints = await getAvailablePoints(userId, transaction);
+      const availablePoints = await getAvailablePoints(userUuid, transaction);
       if (availablePoints < reward.pointsRequired) BaseService.throwError(422, 'redemption.insufficient_points');
 
       const redemption = await Redemption.create({
-        userId,
+        userUuid,
         rewardId: reward.id,
         pointsUsed: reward.pointsRequired,
         redeemedAt: new Date(),
@@ -54,10 +51,10 @@ export const redemptionService = {
     });
   },
 
-  async listRedemptions(userId, query) {
+  async listRedemptions(userUuid, query) {
     const { page, limit, offset, sortedField, sortedBy } = getPaginationParams(query, { sortedField: 'redeemedAt' });
     const { count, rows } = await Redemption.findAndCountAll({
-      where: { userId },
+      where: { userUuid },
       include: rewardInclude,
       limit,
       offset,
@@ -67,8 +64,8 @@ export const redemptionService = {
     return { redemptions: rows, pagination: buildPaginationMeta(count, page, limit) };
   },
 
-  async getRedemption(userId, uuid) {
-    const redemption = await Redemption.findOne({ where: { uuid, userId }, include: rewardInclude });
+  async getRedemption(userUuid, uuid) {
+    const redemption = await Redemption.findOne({ where: { uuid, userUuid }, include: rewardInclude });
     if (!redemption) BaseService.throwError(404, 'error.not_found');
     return redemption;
   },
