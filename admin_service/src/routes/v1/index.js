@@ -1,33 +1,11 @@
 import express from "express";
 
-import accessRoute from "../access.route.js";
-import categoryRoute from "../category.route.js";
 import cmsRoute from "../cms.route.js";
 import editorRoute from "../editor.route.js";
-import moduleRoute from "../module.route.js";
-import productRoute from "../product.route.js";
-import purchaseRoute from "../purchase.route.js";
-import redemptionRoute from "../redemption.route.js";
-import rewardRoute from "../reward.route.js";
-import dashboardRoute from "../dashboard.route.js";
-import roleModuleRoute from "../roleModule.route.js";
-import userPermissionRoute from "../userPermission.route.js";
-import userRoute from "../user.route.js";
 
 const router = express.Router();
 
-router.use("/user", userRoute);
-router.use("/access", accessRoute);
-router.use("/module", moduleRoute);
-router.use("/products", productRoute);
-router.use("/purchases", purchaseRoute);
-router.use("/rewards", rewardRoute);
-router.use("/redemptions", redemptionRoute);
-router.use("/dashboard", dashboardRoute);
 router.use("/editor", editorRoute);
 router.use("/cms", cmsRoute);
-router.use("/category", categoryRoute);
-router.use("/user-permissions", userPermissionRoute);
-router.use("/role-modules", roleModuleRoute);
 
 export default router;
