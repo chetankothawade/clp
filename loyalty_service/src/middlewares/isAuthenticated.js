@@ -30,11 +30,21 @@ const isAuthenticated = async (req, res, next) => {
       });
     }
 
-    // Attach user info to request
+    const gatewayUserId = req.get("X-User-Id");
+    const gatewayRole = req.get("X-User-Role");
+    const tokenUserId = decoded.sub || decoded.id;
+    if (gatewayUserId && gatewayUserId !== tokenUserId) {
+      return res.status(401).json({
+        success: false,
+        message: "Gateway identity does not match token",
+      });
+    }
+
+    // Attach verified user info to request. Prefer trusted gateway headers when present.
     req.user = {
-      id: decoded.sub || decoded.id,
-      uuid: decoded.sub || decoded.id,
-      role: decoded.role,
+      id: gatewayUserId || tokenUserId,
+      uuid: gatewayUserId || tokenUserId,
+      role: gatewayRole || decoded.role,
     };
 
     next();

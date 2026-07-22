@@ -20,7 +20,10 @@ export const purchaseService = {
     } catch (_) { BaseService.throwError(503, 'purchase.product_service_unavailable'); }
     finally { clearTimeout(timeout); }
     if (!response?.ok) BaseService.throwError(response?.status === 404 ? 404 : 503, response?.status === 404 ? 'purchase.product_not_available' : 'purchase.product_service_unavailable');
-    const { product } = await response.json();
+    const responseBody = await response.json();
+    const product = responseBody.data?.product;
+    if (!product) BaseService.throwError(503, 'purchase.product_service_unavailable');
+    if (product.status !== 'active') BaseService.throwError(404, 'purchase.product_not_available');
 
     try {
       return await sequelize.transaction(async (transaction) => {

@@ -10,6 +10,8 @@
 | Admin/CMS | `admin_db` | CMS, editor | None |
 | Gateway | None | All `/api/v1` public routes | Routes and validates JWTs |
 
+Internal API errors use `{ success: false, code, message, requestId }`. The Product purchase-details success response uses `{ success: true, data: { product }, requestId }` and returns the same ID in `X-Request-Id`.
+
 ## Health checks
 
 Every service exposes `GET /health` and `GET /ready`. Both return a request ID. Deployments should use `/health` for liveness and `/ready` for traffic admission.
