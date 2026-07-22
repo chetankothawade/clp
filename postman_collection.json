@@ -1,8 +1,8 @@
 {
   "info": {
-    "name": "Node Admin API",
+    "name": "Customer Loyalty Program API Gateway",
     "_postman_id": "db42bc84-51d5-46af-a9f8-62a2967f1f10",
-    "description": "Curated Postman collection for the Sequelize + PostgreSQL API routes mounted in app.js.",
+    "description": "Postman collection for the API Gateway public routes in the microservices architecture. Use `base_url` to point to the gateway.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [

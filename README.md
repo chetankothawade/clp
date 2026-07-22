@@ -150,6 +150,7 @@ Useful documentation files:
 ## Postman Collection
 
 Import `postman_collection.json` from the repository root for example API requests and flows.
+The collection uses the public API Gateway endpoints only. Set `base_url` to the gateway host and port, not to individual service URLs.
 
 ## Notes
 
