@@ -45,6 +45,10 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.get("/ready", (req, res) => {
+  res.status(200).json({ status: "ready", requestId: req.id, timestamp: Date.now() });
+});
+
 app.use("/api/v1", v1Routes);
 app.use("/api/v2", v2Routes);
 app.use("/internal", internalRoutes);
