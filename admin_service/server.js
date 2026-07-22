@@ -12,7 +12,7 @@ const [{ default: app }, { default: logger }, { default: db }] = await Promise.a
   import("./src/models/index.js"),
 ]);
 
-const PORT = Number.parseInt(process.env.PORT, 10) || 8000;
+const PORT = Number.parseInt(process.env.PORT, 10) || 8004;
 
 try {
   await db.sequelize.authenticate();

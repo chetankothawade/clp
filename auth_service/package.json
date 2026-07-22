@@ -13,7 +13,8 @@
     "db:migrate": "sequelize-cli db:migrate",
     "db:migrate:undo": "sequelize-cli db:migrate:undo",
     "db:seed": "sequelize-cli db:seed:all",
-    "db:seed:undo": "sequelize-cli db:seed:undo:all"
+    "db:seed:undo": "sequelize-cli db:seed:undo:all",
+    "db:migrate:legacy-auth": "node scripts/migrate-legacy-auth-data.js"
   },
   "keywords": [],
   "author": "",

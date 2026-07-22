@@ -2,27 +2,12 @@
 import jwt from "jsonwebtoken";
 
 export const generateToken = (user) => {
-    const payload = { id: user.id, role: user.role };
-
-    let secret = process.env.SECRET_KEY;
-    let expiresIn = process.env.JWT_EXPIRES_IN || "7d";
-
-    // Different config per role
-    if (user.role === "admin") {
-        secret = process.env.ADMIN_SECRET_KEY || process.env.SECRET_KEY;
-        expiresIn = process.env.ADMIN_JWT_EXPIRES_IN || "1d";
-    }
-
-    return jwt.sign(payload, secret, { expiresIn });
+    throw new Error("Tokens can only be issued by Auth Service");
 };
 
 export const verifyToken = (token, role = null) => {
     try {
-        let secret = process.env.SECRET_KEY;
-        if (role === "admin") {
-            secret = process.env.ADMIN_SECRET_KEY || process.env.SECRET_KEY;
-        }
-        return jwt.verify(token, secret);
+        return jwt.verify(token, process.env.JWT_PUBLIC_KEY || process.env.SECRET_KEY, { algorithms: [process.env.JWT_ALGORITHM || "HS256"], issuer: "auth-service", audience: "clp-api" });
     } catch (_error) {
         return null;
     }

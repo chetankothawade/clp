@@ -52,7 +52,7 @@ export const authService = {
     }
 
     // Keep existing behavior, including typo compatibility from legacy code.
-    if (user.staus === "inactive") {
+    if (user.status === "inactive") {
       BaseService.throwError(401, "auth.login.account_inactive");
     }
 
