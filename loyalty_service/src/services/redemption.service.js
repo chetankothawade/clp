@@ -27,6 +27,11 @@ const getAvailablePoints = async (userUuid, transaction) => {
 export const redemptionService = {
   async createRedemption(userUuid, payload) {
     return sequelize.transaction(async (transaction) => {
+      await sequelize.query('SELECT pg_advisory_xact_lock(hashtext(:userUuid))', {
+        replacements: { userUuid },
+        transaction,
+      });
+
       const reward = await Reward.findOne({
         where: availableRewardWhere(payload.reward_uuid),
         transaction,

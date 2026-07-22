@@ -1,7 +1,6 @@
 import express from "express";
 
 
-import productRoute from "../product.route.js";
 import purchaseRoute from "../purchase.route.js";
 import redemptionRoute from "../redemption.route.js";
 import rewardRoute from "../reward.route.js";
