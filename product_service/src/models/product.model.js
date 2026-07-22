@@ -12,10 +12,6 @@ export default (sequelize, DataTypes) => {
         as: "category",
         foreignKey: { name: "category_id", field: "category_id" },
       });
-      Product.hasMany(models.Purchase, {
-        as: "purchases",
-        foreignKey: { name: "productId", field: "product_id" },
-      });
     }
   }
   Product.init(

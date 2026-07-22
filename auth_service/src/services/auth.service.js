@@ -26,7 +26,7 @@ export const authService = {
     return {
       token,
       user: {
-        id: newUser.id,
+        uuid: newUser.uuid,
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
@@ -60,7 +60,6 @@ export const authService = {
     return {
       token,
       user: {
-        id: user.id,
         uuid: user.uuid,
         name: user.name,
         email: user.email,

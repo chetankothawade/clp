@@ -5,7 +5,7 @@ import logger from "../utils/logger.js";
 
 dotenv.config({ quiet: true });
 
-const database = process.env.DB_NAME || process.env.DB_DATABASE || "postgres";
+const database = process.env.AUTH_DB_NAME || process.env.DB_NAME || process.env.DB_DATABASE || "auth_db";
 const username = process.env.DB_USER || process.env.DB_USERNAME || "postgres";
 const password = process.env.DB_PASS || process.env.DB_PASSWORD || "postgres";
 const host = process.env.DB_HOST || process.env.DB_HOSTNAME || "127.0.0.1";
