@@ -4,6 +4,7 @@ export { sendResponse, sendListResponse, handleError } from "./utils/response.js
 export { default as asyncHandler } from "./middlewares/asyncHandler.js";
 export { default as requestId } from "./middlewares/requestId.js";
 export { getServiceEnv } from "./config/env.js";
+export { signToken, verifyToken } from "./utils/token.js";
 
 export const sharedHelpers = {
   createRequestId() {
