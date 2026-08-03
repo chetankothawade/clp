@@ -18,6 +18,32 @@ The architecture follows a gateway-first microservices migration path:
 - services communicate via REST only when needed
 - JWT auth is issued by `auth_service` and verified by the gateway
 
+## Monorepo layout
+
+The repository now includes a clearer service-oriented monorepo structure:
+
+```text
+backend/
+  apps/
+    api-gateway/
+    auth-service/
+    product-service/
+    loyalty-service/
+    admin-service/
+
+  packages/
+    shared/
+
+  infra/
+    docker/
+    k8s/
+```
+
+This keeps the project aligned with a clean microservice migration path:
+- `apps/` holds runnable domain services
+- `packages/shared/` holds cross-cutting utilities shared by services
+- `infra/` is reserved for deployment and environment configuration
+
 ## Services
 
 ### api_gateway
@@ -57,17 +83,16 @@ The architecture follows a gateway-first microservices migration path:
 
 ## Getting Started
 
-There is no top-level Node.js app. Work inside each service folder.
+The repository now supports workspace-level commands from the root.
 
 Example workflow:
 
 ```bash
-cd d:/Projects/clp/api_gateway
 npm install
-npm run dev
+npm run dev:gateway
 ```
 
-Repeat for each service that you need to run locally.
+You can also run service-specific commands from the existing service folders if you need backwards compatibility during migration.
 
 ## Service Setup
 
@@ -154,6 +179,6 @@ The collection uses the public API Gateway endpoints only. Set `base_url` to the
 
 ## Notes
 
-- The root repo is a workspace container, not a single Node application.
-- Run service-specific commands inside each service folder.
+- The root repo is now a workspace container and a monorepo entry point.
+- Run service-specific commands inside each service folder during transition.
 - Keep the gateway as the public façade to avoid client-breaking route changes.

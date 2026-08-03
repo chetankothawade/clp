@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  api-gateway:
+    image: node:20-alpine
+    working_dir: /workspace
+    command: sh -c "npm install && npm run dev"
+    volumes:
+      - ../..:/workspace
+    ports:
+      - "3000:3000"
+
+  auth-service:
+    image: node:20-alpine
+    working_dir: /workspace
+    command: sh -c "npm install && npm run dev"
+    volumes:
+      - ../..:/workspace
+    ports:
+      - "3001:3001"
+
+  product-service:
+    image: node:20-alpine
+    working_dir: /workspace
+    command: sh -c "npm install && npm run dev"
+    volumes:
+      - ../..:/workspace
+    ports:
+      - "3002:3002"
+
+  loyalty-service:
+    image: node:20-alpine
+    working_dir: /workspace
+    command: sh -c "npm install && npm run dev"
+    volumes:
+      - ../..:/workspace
+    ports:
+      - "3003:3003"
