@@ -13,6 +13,10 @@
     "dev:loyalty": "npm --workspace apps/loyalty-service run dev",
     "dev:admin": "npm --workspace apps/admin-service run dev",
     "lint": "npm run lint --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present"
+    "test": "npm run test --workspaces --if-present",
+    "db:migrate": "npm run db:migrate --workspaces --if-present",
+    "db:migrate:undo": "npm run db:migrate:undo --workspaces --if-present",
+    "db:seed": "npm run db:seed --workspaces --if-present",
+    "db:seed:undo": "npm run db:seed:undo --workspaces --if-present"
   }
 }
