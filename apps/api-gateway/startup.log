@@ -1,2 +1,7 @@
 ◇ injected env (0) from .env.local // tip: ⌘ custom filepath { path: '/custom/path/.env' }
 API gateway listening on 8000
+{"timestamp":"2026-08-05T09:11:42.708Z","component":"api-gateway","requestId":"44d6de76-3de7-4846-8667-0ff6bfa36a0e","callerService":"api-gateway","targetService":"auth","method":"POST","status":500,"latencyMs":275}
+{"timestamp":"2026-08-05T09:31:57.776Z","component":"api-gateway","requestId":"be1c4a79-d038-43a3-957c-f632dba2f0b0","callerService":"api-gateway","targetService":"auth","method":"POST","status":500,"latencyMs":298}
+{"timestamp":"2026-08-05T09:32:09.109Z","component":"api-gateway","requestId":"36111d8f-3ae2-49f8-ad8c-0abfc8b75d76","callerService":"api-gateway","targetService":"auth","method":"POST","status":400,"latencyMs":8}
+{"timestamp":"2026-08-05T09:32:18.170Z","component":"api-gateway","requestId":"f4e4ac1b-0d70-43e0-8960-bc6ef3537053","callerService":"api-gateway","targetService":"auth","method":"POST","status":400,"latencyMs":7}
+{"timestamp":"2026-08-05T09:32:24.442Z","component":"api-gateway","requestId":"be77be30-a35d-417a-b9e6-2f508d05a481","callerService":"api-gateway","targetService":"auth","method":"POST","status":500,"latencyMs":258}
