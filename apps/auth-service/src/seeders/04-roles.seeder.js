@@ -42,7 +42,7 @@ export async function up(queryInterface) {
   for (const module of modules) {
     for (const role of ADMIN_ROLES) {
       if (!existingRoleModuleKeys.has(`${role}:${module.id}`)) {
-        roleModules.push({ role, module_id: module.id, created_at: now, updated_at: now });
+        roleModules.push({ uuid: randomUUID(), role, module_id: module.id, created_at: now, updated_at: now });
       }
     }
   }

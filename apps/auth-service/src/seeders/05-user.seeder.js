@@ -49,7 +49,7 @@ export async function up(queryInterface, Sequelize) {
         },
     ];
 
-    // Add 50 random fake users
+    // Add random fake users
     for (let i = 0; i < 10; i++) {
         const hashedPassword = await bcrypt.hash("Password@123", SALT_ROUNDS);
         users.push({
@@ -60,13 +60,24 @@ export async function up(queryInterface, Sequelize) {
             phone: faker.phone.number("+91##########").slice(0, 20),
             avatar: faker.image.avatar(),
             role: "user",
-            status: faker.helpers.arrayElement(["active", "inactive", "suspended"]),
+            status: faker.helpers.arrayElement(["active", "inactive"]),
             created_at: new Date(),
             updated_at: new Date(),
         });
     }
 
-    return queryInterface.bulkInsert("users", users);
+    // Idempotency guard: skip emails that already exist in the users table.
+    const emails = users.map((user) => user.email);
+    const [existingUsers] = await queryInterface.sequelize.query(
+        "SELECT email FROM users WHERE email IN (:emails)",
+        { replacements: { emails } }
+    );
+    const existingEmails = new Set(existingUsers.map((user) => user.email));
+    const usersToInsert = users.filter((user) => !existingEmails.has(user.email));
+
+    if (usersToInsert.length) {
+        return queryInterface.bulkInsert("users", usersToInsert);
+    }
 }
 
 export async function down(queryInterface, Sequelize) {

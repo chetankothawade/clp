@@ -2,7 +2,19 @@
 
 import { randomUUID } from 'crypto';
 
-const PRODUCT_SKUS = ['LOYALTY-DEMO-COFFEE', 'LOYALTY-DEMO-BACKPACK', 'LOYALTY-DEMO-HEADPHONES'];
+// The loyalty DB denormalizes product & user references by UUID (no FK to users/products tables).
+const PRODUCTS = [
+  { uuid: 'b1a3f05c-18d7-4ad9-9179-3d0c4b8c8e11', name: 'Coffee Voucher', sku: 'LOYALTY-DEMO-COFFEE', price: 150.0, loyalty_points: 25 },
+  { uuid: 'b1a3f05c-18d7-4ad9-9179-3d0c4b8c8e12', name: 'Travel Backpack', sku: 'LOYALTY-DEMO-BACKPACK', price: 2500.0, loyalty_points: 250 },
+  { uuid: 'b1a3f05c-18d7-4ad9-9179-3d0c4b8c8e13', name: 'Wireless Headphones', sku: 'LOYALTY-DEMO-HEADPHONES', price: 5000.0, loyalty_points: 500 },
+];
+
+// Deterministic user UUIDs matching the auth-service demo users (superadmin/admin/customer/user).
+const USER_UUIDS = [
+  'c8f2f05c-18d7-4ad9-9179-3d0c4b8c8e21',
+  'c8f2f05c-18d7-4ad9-9179-3d0c4b8c8e22',
+  'c8f2f05c-18d7-4ad9-9179-3d0c4b8c8e23',
+];
 
 const daysAgo = (days) => {
   const date = new Date();
@@ -11,32 +23,26 @@ const daysAgo = (days) => {
 };
 
 export async function up(queryInterface) {
-  // The existing user seeder must be run first so purchases are linked to real user IDs.
-  const [users] = await queryInterface.sequelize.query(
-    "SELECT id FROM users WHERE role = 'user' ORDER BY id ASC LIMIT 3"
+  const [existingPurchases] = await queryInterface.sequelize.query(
+    "SELECT id FROM purchases WHERE product_sku IN ('LOYALTY-DEMO-COFFEE', 'LOYALTY-DEMO-BACKPACK', 'LOYALTY-DEMO-HEADPHONES')"
   );
-  if (!users.length) throw new Error('Run the user seeder before the purchase seeder.');
+  if (existingPurchases.length) return;
 
-  const [products] = await queryInterface.sequelize.query(
-    "SELECT id, sku, price, loyalty_points FROM products WHERE sku IN ('LOYALTY-DEMO-COFFEE', 'LOYALTY-DEMO-BACKPACK', 'LOYALTY-DEMO-HEADPHONES') ORDER BY id ASC"
-  );
-  if (products.length !== PRODUCT_SKUS.length) {
-    throw new Error('Run the product seeder before the purchase seeder.');
-  }
-
-  const productBySku = Object.fromEntries(products.map((product) => [product.sku, product]));
+  const productBySku = Object.fromEntries(PRODUCTS.map((product) => [product.sku, product]));
   const rows = [
-    { user: users[0], product: productBySku['LOYALTY-DEMO-HEADPHONES'], quantity: 2, date: daysAgo(5) },
-    { user: users[0], product: productBySku['LOYALTY-DEMO-BACKPACK'], quantity: 1, date: daysAgo(3) },
-    { user: users[Math.min(1, users.length - 1)], product: productBySku['LOYALTY-DEMO-BACKPACK'], quantity: 2, date: daysAgo(4) },
-    { user: users[Math.min(1, users.length - 1)], product: productBySku['LOYALTY-DEMO-COFFEE'], quantity: 1, date: daysAgo(2) },
-    { user: users[Math.min(2, users.length - 1)], product: productBySku['LOYALTY-DEMO-HEADPHONES'], quantity: 1, date: daysAgo(1) },
+    { user: USER_UUIDS[0], product: productBySku['LOYALTY-DEMO-HEADPHONES'], quantity: 2, date: daysAgo(5) },
+    { user: USER_UUIDS[0], product: productBySku['LOYALTY-DEMO-BACKPACK'], quantity: 1, date: daysAgo(3) },
+    { user: USER_UUIDS[1], product: productBySku['LOYALTY-DEMO-BACKPACK'], quantity: 2, date: daysAgo(4) },
+    { user: USER_UUIDS[1], product: productBySku['LOYALTY-DEMO-COFFEE'], quantity: 1, date: daysAgo(2) },
+    { user: USER_UUIDS[2], product: productBySku['LOYALTY-DEMO-HEADPHONES'], quantity: 1, date: daysAgo(1) },
   ];
 
   return queryInterface.bulkInsert('purchases', rows.map(({ user, product, quantity, date }) => ({
     uuid: randomUUID(),
-    user_id: user.id,
-    product_id: product.id,
+    user_uuid: user,
+    product_uuid: product.uuid,
+    product_name: product.name,
+    product_sku: product.sku,
     quantity,
     unit_price: Number(product.price).toFixed(2),
     total_amount: (Number(product.price) * quantity).toFixed(2),
@@ -49,10 +55,7 @@ export async function up(queryInterface) {
 }
 
 export async function down(queryInterface, Sequelize) {
-  const [products] = await queryInterface.sequelize.query(
-    "SELECT id FROM products WHERE sku IN ('LOYALTY-DEMO-COFFEE', 'LOYALTY-DEMO-BACKPACK', 'LOYALTY-DEMO-HEADPHONES')"
-  );
-  if (products.length) {
-    await queryInterface.bulkDelete('purchases', { product_id: { [Sequelize.Op.in]: products.map((product) => product.id) } });
-  }
+  await queryInterface.bulkDelete('purchases', {
+    product_sku: { [Sequelize.Op.in]: PRODUCTS.map((product) => product.sku) },
+  });
 }

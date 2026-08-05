@@ -4,6 +4,12 @@ import { randomUUID } from 'crypto';
 
 const REWARD_NAMES = ['Coffee Reward', 'Shopping Voucher', 'Premium Gift'];
 
+// Deterministic user UUIDs matching the auth-service demo users.
+const USER_UUIDS = [
+  'c8f2f05c-18d7-4ad9-9179-3d0c4b8c8e21',
+  'c8f2f05c-18d7-4ad9-9179-3d0c4b8c8e22',
+];
+
 const daysAgo = (days) => {
   const date = new Date();
   date.setDate(date.getDate() - days);
@@ -11,11 +17,10 @@ const daysAgo = (days) => {
 };
 
 export async function up(queryInterface) {
-  // Purchase seed data is required because each redemption consumes earned loyalty points.
-  const [users] = await queryInterface.sequelize.query(
-    "SELECT id FROM users WHERE role = 'user' ORDER BY id ASC LIMIT 2"
+  const [existingRedemptions] = await queryInterface.sequelize.query(
+    "SELECT id FROM redemptions WHERE reward_id IN (SELECT id FROM rewards WHERE name IN ('Coffee Reward', 'Shopping Voucher', 'Premium Gift'))"
   );
-  if (!users.length) throw new Error('Run the user seeder before the redemption seeder.');
+  if (existingRedemptions.length) return;
 
   const [rewards] = await queryInterface.sequelize.query(
     "SELECT id, name, points_required, stock FROM rewards WHERE name IN ('Coffee Reward', 'Shopping Voucher', 'Premium Gift') ORDER BY id ASC"
@@ -26,14 +31,14 @@ export async function up(queryInterface) {
 
   const rewardByName = Object.fromEntries(rewards.map((reward) => [reward.name, reward]));
   const rows = [
-    { user: users[0], reward: rewardByName['Coffee Reward'], date: daysAgo(2) },
-    { user: users[0], reward: rewardByName['Premium Gift'], date: daysAgo(1) },
-    { user: users[Math.min(1, users.length - 1)], reward: rewardByName['Shopping Voucher'], date: daysAgo(1) },
+    { user: USER_UUIDS[0], reward: rewardByName['Coffee Reward'], date: daysAgo(2) },
+    { user: USER_UUIDS[0], reward: rewardByName['Premium Gift'], date: daysAgo(1) },
+    { user: USER_UUIDS[1], reward: rewardByName['Shopping Voucher'], date: daysAgo(1) },
   ];
 
   await queryInterface.bulkInsert('redemptions', rows.map(({ user, reward, date }) => ({
     uuid: randomUUID(),
-    user_id: user.id,
+    user_uuid: user,
     reward_id: reward.id,
     points_used: reward.points_required,
     redeemed_at: date,
