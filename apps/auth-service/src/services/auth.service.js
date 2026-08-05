@@ -21,7 +21,11 @@ export const authService = {
     }
 
     const newUser = await User.create({ name, email, password, role });
-    const token = generateToken(newUser);
+    const token = generateToken({
+      sub: newUser.uuid,
+      role: newUser.role,
+      permissions: [],
+    });
 
     return {
       token,
@@ -56,7 +60,11 @@ export const authService = {
       BaseService.throwError(401, "auth.login.account_inactive");
     }
 
-    const token = generateToken(user);
+    const token = generateToken({
+      sub: user.uuid,
+      role: user.role,
+      permissions: [],
+    });
     return {
       token,
       user: {

@@ -1,8 +1,20 @@
-# TODO: Dynamic UUIDs in Loyalty Seeders
+# Lint Error Fix Plan
 
-- [x] Explore seeders and understand DB topology
-- [x] Get plan approval
-- [x] Create `apps/loyalty-service/src/seeders/db.helper.js` (cross-db pg helper)
-- [x] Update `apps/loyalty-service/src/seeders/07-purchases.seeder.js` to fetch real user/product UUIDs
-- [x] Update `apps/loyalty-service/src/seeders/09-redemptions.seeder.js` to fetch real user UUIDs
-- [x] Verify seeding works (users + products must be seeded first)
+## Context
+`npm run lint` fails due to ESLint errors in `loyalty-service` and `product-service`.
+`admin-service` and `auth-service` already pass (exit 0).
+`api-gateway` and `packages/shared` have no `lint` script defined.
+
+## Errors to fix
+
+### loyalty-service
+- [ ] `scripts/migrate-legacy-loyalty-data.js` — unused vars: `label`, `user_id`, `product_id`
+- [ ] `src/services/purchase.service.js` — `n/no-unsupported-features/node-builtins` for `fetch` (Node 16)
+- [ ] `src/utils/generateToken.js` — unused params: `res`, `user`, `message`
+- [ ] `tests/contract/loyalty-product.contract.test.js` — `n/no-unsupported-features/node-builtins` for `fetch`, `Response`
+
+### product-service
+- [ ] `src/utils/generateToken.js` — unused params: `res`, `user`, `message`
+
+## Verification
+- [ ] Run `npm run lint` and confirm it passes (exit 0) for all workspaces
