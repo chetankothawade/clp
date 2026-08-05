@@ -1,13 +1,14 @@
 'use strict';
 
 import { randomUUID } from 'crypto';
+import { fetchUsers } from './db.helper.js';
 
 const REWARD_NAMES = ['Coffee Reward', 'Shopping Voucher', 'Premium Gift'];
 
-// Deterministic user UUIDs matching the auth-service demo users.
-const USER_UUIDS = [
-  'c8f2f05c-18d7-4ad9-9179-3d0c4b8c8e21',
-  'c8f2f05c-18d7-4ad9-9179-3d0c4b8c8e22',
+// Emails of the auth-service demo users used to locate their real UUIDs.
+const USER_EMAILS = [
+  'superadmin@yopmail.com',
+  'admin@yopmail.com',
 ];
 
 const daysAgo = (days) => {
@@ -28,6 +29,16 @@ export async function up(queryInterface) {
   if (rewards.length !== REWARD_NAMES.length) {
     throw new Error('Run the reward seeder before the redemption seeder.');
   }
+
+  // Fetch the real user UUIDs from the auth-service `users` table (by email).
+  const userRows = await fetchUsers();
+  const userByEmail = Object.fromEntries(userRows.map((user) => [user.email, user]));
+  const missingEmails = USER_EMAILS.filter((email) => !userByEmail[email]);
+  if (missingEmails.length) {
+    throw new Error(`Run the auth-service user seeder first. Missing users: ${missingEmails.join(', ')}`);
+  }
+
+  const USER_UUIDS = USER_EMAILS.map((email) => userByEmail[email].uuid);
 
   const rewardByName = Object.fromEntries(rewards.map((reward) => [reward.name, reward]));
   const rows = [

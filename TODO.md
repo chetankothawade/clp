@@ -1,17 +1,8 @@
-# Seeder Fixes - TODO
+# TODO: Dynamic UUIDs in Loyalty Seeders
 
-## Task
-Fix `npm run db:seed` errors across services so seeding runs cleanly per service.
-
-## Root Causes
-- auth-service: `04-roles.seeder.js` missing `uuid` in role_modules inserts
-- loyalty-service: seeders reference users/products tables that don't exist in loyalty DB
-- admin-service: no seeders present
-
-## Steps
-- [x] A. auth-service: add `uuid` to role_modules inserts in `04-roles.seeder.js`
-- [x] B. loyalty-service: rewrite `07-purchases.seeder.js` for loyalty schema
-- [x] B. loyalty-service: verify `08-rewards.seeder.js` matches schema
-- [x] B. loyalty-service: rewrite `09-redemptions.seeder.js` for loyalty schema
-- [x] C. admin-service: add `01-cms.seeder.js` for cms table
-- [x] Run `npm run db:seed` and verify all services seed successfully
+- [x] Explore seeders and understand DB topology
+- [x] Get plan approval
+- [x] Create `apps/loyalty-service/src/seeders/db.helper.js` (cross-db pg helper)
+- [x] Update `apps/loyalty-service/src/seeders/07-purchases.seeder.js` to fetch real user/product UUIDs
+- [x] Update `apps/loyalty-service/src/seeders/09-redemptions.seeder.js` to fetch real user UUIDs
+- [x] Verify seeding works (users + products must be seeded first)

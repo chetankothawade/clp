@@ -1,20 +1,24 @@
 'use strict';
 
 import { randomUUID } from 'crypto';
+import { fetchUsers, fetchProducts } from './db.helper.js';
 
 // The loyalty DB denormalizes product & user references by UUID (no FK to users/products tables).
-const PRODUCTS = [
-  { uuid: 'b1a3f05c-18d7-4ad9-9179-3d0c4b8c8e11', name: 'Coffee Voucher', sku: 'LOYALTY-DEMO-COFFEE', price: 150.0, loyalty_points: 25 },
-  { uuid: 'b1a3f05c-18d7-4ad9-9179-3d0c4b8c8e12', name: 'Travel Backpack', sku: 'LOYALTY-DEMO-BACKPACK', price: 2500.0, loyalty_points: 250 },
-  { uuid: 'b1a3f05c-18d7-4ad9-9179-3d0c4b8c8e13', name: 'Wireless Headphones', sku: 'LOYALTY-DEMO-HEADPHONES', price: 5000.0, loyalty_points: 500 },
+// Product metadata (name/sku/price/points) used as fallback when the product-service row is unavailable.
+const PRODUCT_META = [
+  { name: 'Coffee Voucher', sku: 'LOYALTY-DEMO-COFFEE', price: 150.0, loyalty_points: 25 },
+  { name: 'Travel Backpack', sku: 'LOYALTY-DEMO-BACKPACK', price: 2500.0, loyalty_points: 250 },
+  { name: 'Wireless Headphones', sku: 'LOYALTY-DEMO-HEADPHONES', price: 5000.0, loyalty_points: 500 },
 ];
 
-// Deterministic user UUIDs matching the auth-service demo users (superadmin/admin/customer/user).
-const USER_UUIDS = [
-  'c8f2f05c-18d7-4ad9-9179-3d0c4b8c8e21',
-  'c8f2f05c-18d7-4ad9-9179-3d0c4b8c8e22',
-  'c8f2f05c-18d7-4ad9-9179-3d0c4b8c8e23',
+// Fallback user emails (by role) used to locate real UUIDs in the auth-service users table.
+const USER_EMAILS = [
+  'superadmin@yopmail.com',
+  'admin@yopmail.com',
+  'user@yopmail.com',
 ];
+
+const PRODUCT_SKUS = PRODUCT_META.map((product) => product.sku);
 
 const daysAgo = (days) => {
   const date = new Date();
@@ -28,7 +32,24 @@ export async function up(queryInterface) {
   );
   if (existingPurchases.length) return;
 
-  const productBySku = Object.fromEntries(PRODUCTS.map((product) => [product.sku, product]));
+  // Fetch the real product UUIDs from the product-service `products` table (by SKU).
+  const productRows = await fetchProducts();
+  const productBySku = Object.fromEntries(productRows.map((product) => [product.sku, product]));
+  const missingSkus = PRODUCT_SKUS.filter((sku) => !productBySku[sku]);
+  if (missingSkus.length) {
+    throw new Error(`Run the product-service product seeder first. Missing SKUs: ${missingSkus.join(', ')}`);
+  }
+
+  // Fetch the real user UUIDs from the auth-service `users` table (by email).
+  const userRows = await fetchUsers();
+  const userByEmail = Object.fromEntries(userRows.map((user) => [user.email, user]));
+  const missingEmails = USER_EMAILS.filter((email) => !userByEmail[email]);
+  if (missingEmails.length) {
+    throw new Error(`Run the auth-service user seeder first. Missing users: ${missingEmails.join(', ')}`);
+  }
+
+  const USER_UUIDS = USER_EMAILS.map((email) => userByEmail[email].uuid);
+
   const rows = [
     { user: USER_UUIDS[0], product: productBySku['LOYALTY-DEMO-HEADPHONES'], quantity: 2, date: daysAgo(5) },
     { user: USER_UUIDS[0], product: productBySku['LOYALTY-DEMO-BACKPACK'], quantity: 1, date: daysAgo(3) },
@@ -56,6 +77,6 @@ export async function up(queryInterface) {
 
 export async function down(queryInterface, Sequelize) {
   await queryInterface.bulkDelete('purchases', {
-    product_sku: { [Sequelize.Op.in]: PRODUCTS.map((product) => product.sku) },
+    product_sku: { [Sequelize.Op.in]: PRODUCT_META.map((product) => product.sku) },
   });
 }
