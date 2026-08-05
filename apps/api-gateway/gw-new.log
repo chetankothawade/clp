@@ -5,3 +5,6 @@ API gateway listening on 8000
 {"timestamp":"2026-08-05T11:12:46.200Z","component":"api-gateway","requestId":"094c9cc6-ea54-40b9-8968-1750f112f98d","callerService":"api-gateway","targetService":"auth","method":"POST","status":200,"latencyMs":250}
 {"timestamp":"2026-08-05T11:12:46.508Z","component":"api-gateway","requestId":"c734123d-e87f-4783-b4f0-b5ce572d54fa","callerService":"api-gateway","targetService":"loyalty","method":"GET","status":200,"latencyMs":291}
 {"timestamp":"2026-08-05T11:15:51.059Z","component":"api-gateway","requestId":"d6670a9d-1190-4a7e-b497-7b579d8c9fea","callerService":"api-gateway","targetService":"auth","method":"POST","status":200,"latencyMs":219}
+{"timestamp":"2026-08-05T11:19:18.887Z","component":"api-gateway","requestId":"c6bccdf3-f0d2-4135-970c-b778434d23a2","callerService":"api-gateway","targetService":"auth","method":"POST","status":200,"latencyMs":223}
+{"timestamp":"2026-08-05T11:19:30.810Z","component":"api-gateway","requestId":"093b79c3-2731-40cc-8061-1509bb2d7cac","callerService":"api-gateway","targetService":"auth","method":"POST","status":200,"latencyMs":218}
+{"timestamp":"2026-08-05T11:19:51.268Z","component":"api-gateway","requestId":"e8baad4c-1b84-4af6-9fbc-49935de9ec7d","callerService":"api-gateway","targetService":"product","method":"GET","status":401,"latencyMs":23}
