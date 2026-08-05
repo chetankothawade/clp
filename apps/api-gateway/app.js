@@ -61,7 +61,8 @@ app.use((req, res, next) => {
 });
 
 function identity(req, res, next) {
-  if (req.method === "OPTIONS" || publicPaths.has(req.path) || req.path.startsWith("/api/v1/reset-password/")) return next();
+  const fullPath = req.baseUrl + req.path;
+  if (req.method === "OPTIONS" || publicPaths.has(fullPath) || fullPath.startsWith("/api/v1/reset-password/")) return next();
   const token = req.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) return res.status(401).json({ success: false, message: "Authorization required", requestId: req.requestId });
   try {

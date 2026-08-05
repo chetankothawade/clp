@@ -63,10 +63,31 @@ test("gateway forwards purchase creation contract headers to Loyalty Service", a
     body: { product_uuid: "00000000-0000-4000-8000-000000000111", quantity: 1 },
   });
 
-  assert.equal(response.status, 201);
+assert.equal(response.status, 201);
   assert.equal(forwarded.url, "http://loyalty-service/api/v1/purchases");
   assert.equal(forwarded.options.headers["X-Request-Id"], "request-123");
   assert.equal(forwarded.options.headers["X-User-Id"], "00000000-0000-4000-8000-000000000007");
   assert.equal(forwarded.options.headers["X-User-Role"], "user");
   assert.equal(forwarded.options.headers["idempotency-key"], "purchase-key-123");
+});
+
+test("gateway allows public login/register paths without authorization", async () => {
+  let forwarded;
+  globalThis.fetch = async (url, options) => {
+    forwarded = { url: url.toString(), options };
+    return new Response(JSON.stringify({ success: true, data: { token: "abc" } }), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  };
+
+  const response = await request({
+    method: "POST",
+    path: "/api/v1/login",
+    body: { email: "user@yopmail.com", password: "User@123" },
+  });
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.success, true);
+  assert.equal(forwarded.url, "http://127.0.0.1:8001/api/v1/login");
 });

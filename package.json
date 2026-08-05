@@ -20,3 +20,4 @@
     "db:seed:undo": "npm run db:seed:undo --workspaces --if-present"
   }
 }
+

@@ -1,0 +1,2 @@
+◇ injected env (0) from .env.local // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+API gateway listening on 8000
