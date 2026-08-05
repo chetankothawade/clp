@@ -4,3 +4,4 @@ API gateway listening on 8000
 {"timestamp":"2026-08-05T11:11:48.235Z","component":"api-gateway","requestId":"af30217e-2312-40ac-8fdd-28bf6cf079bd","callerService":"api-gateway","targetService":"loyalty","method":"GET","status":502,"latencyMs":11,"error":"TypeError"}
 {"timestamp":"2026-08-05T11:12:46.200Z","component":"api-gateway","requestId":"094c9cc6-ea54-40b9-8968-1750f112f98d","callerService":"api-gateway","targetService":"auth","method":"POST","status":200,"latencyMs":250}
 {"timestamp":"2026-08-05T11:12:46.508Z","component":"api-gateway","requestId":"c734123d-e87f-4783-b4f0-b5ce572d54fa","callerService":"api-gateway","targetService":"loyalty","method":"GET","status":200,"latencyMs":291}
+{"timestamp":"2026-08-05T11:15:51.059Z","component":"api-gateway","requestId":"d6670a9d-1190-4a7e-b497-7b579d8c9fea","callerService":"api-gateway","targetService":"auth","method":"POST","status":200,"latencyMs":219}
