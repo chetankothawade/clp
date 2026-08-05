@@ -10,7 +10,7 @@ const legacy = new Sequelize(
   process.env.LEGACY_DB_PASSWORD || process.env.DB_PASS || "postgres",
   { host: process.env.LEGACY_DB_HOST || process.env.DB_HOST || "127.0.0.1", port: Number(process.env.LEGACY_DB_PORT || process.env.DB_PORT || 5432), dialect: "postgres", logging: false },
 );
-const ensureUuid = (row, label) => { if (!row.uuid) row.uuid = crypto.randomUUID(); return row; };
+const ensureUuid = (row, _label) => { if (!row.uuid) row.uuid = crypto.randomUUID(); return row; };
 
 try {
   await legacy.authenticate();
@@ -22,8 +22,8 @@ try {
     const [legacyRedemptions] = await legacy.query("SELECT re.*, u.uuid AS user_uuid FROM redemptions re JOIN users u ON u.id = re.user_id ORDER BY re.id");
     if ([...legacyPurchases, ...legacyRedemptions].some((row) => !row.user_uuid)) throw new Error("Legacy users require UUIDs before Loyalty data can be migrated");
     if (legacyPurchases.some((row) => !row.product_uuid)) throw new Error("Legacy products require UUIDs before Loyalty data can be migrated");
-    const purchases = legacyPurchases.map(({ user_id, product_id, ...row }) => ensureUuid(row, "purchase"));
-    const redemptions = legacyRedemptions.map(({ user_id, ...row }) => ensureUuid(row, "redemption"));
+    const purchases = legacyPurchases.map(({ user_id: _user_id, product_id: _product_id, ...row }) => ensureUuid(row, "purchase"));
+    const redemptions = legacyRedemptions.map(({ user_id: _user_id, ...row }) => ensureUuid(row, "redemption"));
     const queryInterface = db.sequelize.getQueryInterface();
     if (rewards.length) await queryInterface.bulkInsert("rewards", rewards.map((row) => ensureUuid(row, "reward")), { transaction });
     if (purchases.length) await queryInterface.bulkInsert("purchases", purchases, { transaction });

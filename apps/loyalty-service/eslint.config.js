@@ -41,6 +41,9 @@ export default [
       "n/no-process-exit": "off",
       "n/no-missing-import": "off",
       "security/detect-object-injection": "off",
+      "n/no-unsupported-features/node-builtins": ["error", {
+        ignores: ["fetch", "Response"],
+      }],
     },
   },
   {
