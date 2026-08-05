@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken";
 
 export function signToken(payload, options = {}) {
-  const key = process.env.JWT_PRIVATE_KEY || process.env.SECRET_KEY;
+  const isAdmin = payload?.role === "admin";
+  const key = isAdmin
+    ? process.env.JWT_PRIVATE_KEY || process.env.ADMIN_SECRET_KEY
+    : process.env.JWT_PRIVATE_KEY || process.env.SECRET_KEY;
   const opts = {
     algorithm: process.env.JWT_ALGORITHM || "HS256",
     issuer: "auth-service",

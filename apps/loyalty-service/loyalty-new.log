@@ -1,0 +1,4 @@
+◇ injected env (24) from .env.local // tip: ⌘ override existing { override: true }
+{"level":30,"time":1785928338489,"pid":12716,"hostname":"LTPU-5CD4467MFB","msg":"Database connection established"}
+{"level":30,"time":1785928338492,"pid":12716,"hostname":"LTPU-5CD4467MFB","port":8003,"msg":"Server is running"}
+{"level":30,"time":1785928366510,"pid":12716,"hostname":"LTPU-5CD4467MFB","type":"http","msg":"GET /api/v1/dashboard 200 334 - 272.633 ms request_id=c734123d-e87f-4783-b4f0-b5ce572d54fa"}

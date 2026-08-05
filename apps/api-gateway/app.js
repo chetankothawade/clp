@@ -60,19 +60,30 @@ app.use((req, res, next) => {
   next();
 });
 
+const jwtVerifyKeys = [
+  process.env.JWT_PUBLIC_KEY || process.env.JWT_PRIVATE_KEY || process.env.SECRET_KEY,
+  process.env.ADMIN_SECRET_KEY,
+].filter(Boolean);
+if (!jwtVerifyKeys.length) {
+  throw new Error("Missing JWT secret: set JWT_PUBLIC_KEY, JWT_PRIVATE_KEY, or SECRET_KEY in the gateway environment");
+}
+
 function identity(req, res, next) {
   const fullPath = req.baseUrl + req.path;
   if (req.method === "OPTIONS" || publicPaths.has(fullPath) || fullPath.startsWith("/api/v1/reset-password/")) return next();
   const token = req.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) return res.status(401).json({ success: false, message: "Authorization required", requestId: req.requestId });
-  try {
-    req.identity = jwt.verify(token, process.env.JWT_PUBLIC_KEY || process.env.JWT_PRIVATE_KEY || process.env.SECRET_KEY, {
-      algorithms: [jwtAlgorithm], issuer: "auth-service", audience: "clp-api",
-    });
-    return next();
-  } catch {
-    return res.status(401).json({ success: false, message: "Invalid or expired token", requestId: req.requestId });
+  for (const key of jwtVerifyKeys) {
+    try {
+      req.identity = jwt.verify(token, key, {
+        algorithms: [jwtAlgorithm], issuer: "auth-service", audience: "clp-api",
+      });
+      return next();
+    } catch {
+      // Try the next key; if none match, reject below.
+    }
   }
+  return res.status(401).json({ success: false, message: "Invalid or expired token", requestId: req.requestId });
 }
 
 function proxy(service) {
