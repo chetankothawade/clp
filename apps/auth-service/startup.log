@@ -1,9 +1,0 @@
-◇ injected env (24) from .env.local // tip: ◈ secrets for agents [www.dotenvx.com]
-{"level":30,"time":1785922799249,"pid":39720,"hostname":"LTPU-5CD4467MFB","msg":"Preloaded 2 email templates"}
-{"level":30,"time":1785922799608,"pid":39720,"hostname":"LTPU-5CD4467MFB","msg":"Database connection established"}
-{"level":30,"time":1785922799609,"pid":39720,"hostname":"LTPU-5CD4467MFB","port":8001,"msg":"Server is running"}
-{"level":30,"time":1785922822450,"pid":39720,"hostname":"LTPU-5CD4467MFB","type":"http","msg":"POST /api/v1/login 200 475 - 317.682 ms request_id=2ef19593-cec7-464d-9526-54159b4b3953"}
-{"level":30,"time":1785923138707,"pid":39720,"hostname":"LTPU-5CD4467MFB","type":"http","msg":"POST /api/v1/login 200 475 - 206.587 ms request_id=ab467635-2df3-4b45-b19e-99bc79189071"}
-{"level":30,"time":1785923528482,"pid":39720,"hostname":"LTPU-5CD4467MFB","type":"http","msg":"POST /api/v1/login 200 475 - 337.557 ms request_id=a4e80dc4-a57d-47f8-89c5-72dfb59df19c"}
-{"level":30,"time":1785923540043,"pid":39720,"hostname":"LTPU-5CD4467MFB","type":"http","msg":"POST /api/v1/login 200 475 - 248.877 ms request_id=1403dbb0-88c2-446d-98e5-496087c6bab1"}
-{"level":30,"time":1785926891173,"pid":39720,"hostname":"LTPU-5CD4467MFB","type":"http","msg":"POST /api/v1/login 200 475 - 306.385 ms request_id=51833698-6516-4f07-8f2d-2fa63b59906e"}
