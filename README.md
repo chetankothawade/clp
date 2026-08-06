@@ -107,6 +107,17 @@ npm run db:seed
 
 Available root-level convenience scripts: `db:migrate`, `db:migrate:undo`, `db:seed`, `db:seed:undo`. Each runs the same-named script across all workspaces (`--workspaces --if-present`), so the API gateway and shared package (which have no `db:*` scripts) are safely skipped.
 
+Seeder order matters for demo data. Run migrations first, then seed `auth-service` and `product-service` before `loyalty-service`, because loyalty demo purchases/redemptions resolve real user UUIDs from `auth_db` and real product UUIDs from `product_db`.
+
+If you seed services individually, use this order:
+
+```bash
+npm --workspace apps/auth-service run db:seed
+npm --workspace apps/product-service run db:seed
+npm --workspace apps/loyalty-service run db:seed
+npm --workspace apps/admin-service run db:seed
+```
+
 ### 4. Start the services
 
 From the repository root, each service has a dedicated dev script:
@@ -120,6 +131,16 @@ npm run dev:admin     # admin-service       -> http://localhost:8004
 ```
 
 > The gateway proxies to downstream services using the `*_SERVICE_URL` environment variables (defaults: `8001`–`8004`). Start at least the gateway and the target service(s) you want to reach.
+
+For full Postman coverage, keep all downstream services running with the gateway. Confirm each health endpoint returns `200`:
+
+```text
+GET http://localhost:8000/health  # gateway
+GET http://localhost:8001/health  # auth-service
+GET http://localhost:8002/health  # product-service
+GET http://localhost:8003/health  # loyalty-service
+GET http://localhost:8004/health  # admin-service
+```
 
 ### Service lifecycle commands
 
@@ -211,6 +232,10 @@ GET /ready    -> { status: "ready", ... }
 - **Timeouts** — returns `504` on timeout, `502` on other downstream failures.
 - **Security** — Helmet, CORS, and JSON body limits.
 
+If an endpoint returns `Downstream service temporarily unavailable`, the gateway circuit breaker is open for that target service. Confirm the downstream service health endpoint returns `200`, then wait `DOWNSTREAM_CIRCUIT_OPEN_MS` (default `30000`) or restart the gateway to clear the in-memory circuit state.
+
+If an endpoint returns `Not authorized, token failed`, log in again and send `Authorization: Bearer <token>`. After changing shared JWT code or JWT secrets, restart all running services that verify tokens (`auth-service`, `product-service`, `loyalty-service`, and `admin-service`) so they load the updated shared package/environment.
+
 ## Databases
 
 Each service must connect **only** to its own database:
@@ -226,6 +251,8 @@ Rules:
 - No cross-database foreign key joins.
 - Use UUIDs for public IDs and cross-service references (e.g., `user_uuid`, `product_uuid`).
 - Loyalty stores purchase snapshots (product name, SKU, price, points) so product changes don't alter purchase history.
+
+Exception: local demo seeders may read from sibling service databases to resolve existing UUIDs for seed data only. Runtime application code should still communicate through service APIs, not cross-database queries.
 
 ## Testing & Linting
 
