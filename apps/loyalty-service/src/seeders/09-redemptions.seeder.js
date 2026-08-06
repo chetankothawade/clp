@@ -1,7 +1,7 @@
 'use strict';
 
 import { randomUUID } from 'crypto';
-import { fetchUsers } from './db.helper.js';
+import { fetchUsers } from './helpers/db.helper.js';
 
 const REWARD_NAMES = ['Coffee Reward', 'Shopping Voucher', 'Premium Gift'];
 

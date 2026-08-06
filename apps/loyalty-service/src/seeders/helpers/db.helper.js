@@ -20,11 +20,12 @@ function resolveDbConfig(service) {
         : null;
 
   const fallback = service === 'auth' ? 'auth_db' : service === 'product' ? 'product_db' : 'loyalty_db';
+  const serviceDatabase = envName && process.env[envName];
 
   return {
     user: process.env.DB_USER || process.env.DB_USERNAME || 'postgres',
     password: process.env.DB_PASS || process.env.DB_PASSWORD || 'postgres',
-    database: (envName && process.env[envName]) || process.env.DB_NAME || fallback,
+    database: serviceDatabase || fallback,
     host: process.env.DB_HOST || process.env.DB_HOSTNAME || '127.0.0.1',
     port: Number.parseInt(process.env.DB_PORT || '5432', 10),
   };

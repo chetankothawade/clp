@@ -1,7 +1,7 @@
 'use strict';
 
 import { randomUUID } from 'crypto';
-import { fetchUsers, fetchProducts } from './db.helper.js';
+import { fetchUsers, fetchProducts } from './helpers/db.helper.js';
 
 // The loyalty DB denormalizes product & user references by UUID (no FK to users/products tables).
 // Product metadata (name/sku/price/points) used as fallback when the product-service row is unavailable.
