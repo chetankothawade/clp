@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import { initializeAppTimezone } from "./src/bootstrap/timezone.js";
+import ensureDatabase from "./src/bootstrap/ensureDatabase.js";
 
 dotenv.config({ path: process.env.DOTENV_CONFIG_PATH || ".env.local" });
 
@@ -15,6 +16,12 @@ const [{ default: app }, { default: logger }, { default: db }] = await Promise.a
 const PORT = Number.parseInt(process.env.PORT, 10) || 8002;
 
 try {
+  const { database, created } = await ensureDatabase();
+  if (created) {
+    logger.info({ database }, "Database created because it did not exist");
+  } else {
+    logger.info({ database }, "Database already exists");
+  }
   await db.sequelize.authenticate();
   logger.info("Database connection established");
 } catch (err) {

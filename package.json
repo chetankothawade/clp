@@ -18,6 +18,8 @@
     "db:migrate:undo": "npm run db:migrate:undo --workspaces --if-present",
     "db:seed": "npm run db:seed --workspaces --if-present",
     "db:seed:undo": "npm run db:seed:undo --workspaces --if-present"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2"
   }
 }
-
