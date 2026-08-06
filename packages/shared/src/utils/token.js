@@ -15,12 +15,7 @@ export function signToken(payload, options = {}) {
   return jwt.sign(payload, key, opts);
 }
 
-export function verifyToken(token) {
-  const key = process.env.JWT_PUBLIC_KEY || process.env.JWT_PRIVATE_KEY || process.env.SECRET_KEY;
-  return jwt.verify(token, key, { algorithms: [process.env.JWT_ALGORITHM || "HS256"], issuer: "auth-service", audience: "clp-api" });
-}
-
-export function verifyToken2(token, opts = {}) {
+export function verifyToken(token, opts = {}) {
   const pubOrPrivate = process.env.JWT_PUBLIC_KEY || process.env.JWT_PRIVATE_KEY;
   const userKey = pubOrPrivate || process.env.SECRET_KEY;
   const adminKey = pubOrPrivate || process.env.ADMIN_SECRET_KEY;
